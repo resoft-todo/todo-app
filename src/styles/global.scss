@@ -1,0 +1,273 @@
+@import './variables';
+@import './reset.scss';
+@import "~bootstrap/scss/bootstrap";
+
+:root {
+  --primary-color: #{$primary-color};
+  --primary-dark: #{$primary-dark};
+  --secondary-color: #{$secondary-color};
+  --success-color: #{$success-color};
+  --success-dark: #{$success-dark};
+  --danger-color: #{$danger-color};
+  --danger-dark: #{$danger-dark};
+  --warning-color: #{$warning-color};
+  --warning-dark: #{$warning-dark};
+  --info-color: #{$info-color};
+  --info-dark: #{$info-dark};
+  --light-color: #{$light-color};
+  --dark-color: #{$dark-color};
+  --gray-100: #{$gray-100};
+  --gray-200: #{$gray-200};
+  --gray-300: #{$gray-300};
+  --gray-400: #{$gray-400};
+  --gray-500: #{$gray-500};
+  --gray-600: #{$gray-600};
+  --gray-700: #{$gray-700};
+  --gray-800: #{$gray-800};
+  --gray-900: #{$gray-900};
+}
+
+.text-primary {
+  color: $primary-dark !important;
+}
+
+.text-gray{
+  color: $dark-color !important;
+}
+
+.btn:disabled,
+.btn.disabled,
+fieldset:disabled .btn {
+  background-color: $gray-300 !important;
+  border-color: $gray-300 !important;
+  color: $gray-600 !important;
+  opacity: 1;
+}
+
+.btn-outline-primary {
+  color: $primary-dark;
+  border-color: $primary-dark;
+
+  &:hover {
+    background-color: $primary-color;
+  }
+
+  &:focus,
+  &.focus {
+    box-shadow: 0 0 0 0.2rem rgba(196, 221, 200, 0.5);
+  }
+
+  &:disabled,
+  &.disabled {
+    color: $gray-500;
+    border-color: $gray-300;
+    background-color: transparent;
+  }
+}
+
+.form-check-input {
+  border: 1px solid $primary-dark;
+
+  &:checked {
+    background-color: $primary-dark;
+    border-color: $primary-dark;
+    box-shadow: 0 0 0 0.2rem rgba(196, 221, 200, 0.4);
+  }
+}
+
+
+s, .strikethrough {
+  text-decoration: line-through;
+  color: $gray-600;
+}
+
+.btn-primary {
+  background-color: $primary-dark;
+  border-color: $primary-dark;
+
+  &:hover {
+    background-color: darken($primary-dark, 10%);
+    border-color: darken($primary-dark, 10%);
+  }
+
+  &:focus,
+  &.focus {
+    box-shadow: 0 0 0 0.2rem rgba(66, 135, 78, 0.25); // RGB з $primary-dark
+  }
+}
+
+.btn-success {
+  background-color: $success-color;
+  border-color: $success-color;
+
+  &:hover {
+    background-color: $success-dark;
+    border-color: $success-dark;
+  }
+
+  &:focus,
+  &.focus {
+    box-shadow: 0 0 0 0.2rem rgba(0, 184, 148, 0.25);
+  }
+}
+
+.btn-danger {
+  background-color: $danger-color;
+  border-color: $danger-color;
+
+  &:hover {
+    background-color: $danger-dark;
+    border-color: $danger-dark;
+  }
+
+  &:focus,
+  &.focus {
+    box-shadow: 0 0 0 0.2rem rgba(232, 67, 147, 0.25);
+  }
+}
+
+.btn-warning {
+  background-color: $warning-color;
+  border-color: $warning-color;
+  color: $dark-color;
+
+  &:hover {
+    background-color: $warning-dark;
+    border-color: $warning-dark;
+    color: white;
+  }
+
+  &:focus,
+  &.focus {
+    box-shadow: 0 0 0 0.2rem rgba(253, 203, 110, 0.25);
+  }
+}
+
+.btn-info {
+  background-color: $info-color;
+  border-color: $info-color;
+
+  &:hover {
+    background-color: $info-dark;
+    border-color: $info-dark;
+  }
+
+  &:focus,
+  &.focus {
+    box-shadow: 0 0 0 0.2rem rgba(116, 185, 255, 0.25);
+  }
+}
+
+// Body styles
+body {
+  background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+// Animation
+.fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-out {
+  animation: fadeOut 0.3s ease-in forwards;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+.rounded-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: $light-color;
+  border: none;
+  color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  &:hover {
+    background-color: darken($light, 10%);
+  }
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1050;
+  animation: backdropFadeIn 0.3s ease-out;
+  &.fade-out {
+    animation: backdropFadeOut 0.3s ease-in forwards;
+  }
+}
+
+@keyframes backdropFadeIn {
+  from {
+    background-color: rgba(0, 0, 0, 0);
+  }
+  to {
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+}
+
+@keyframes backdropFadeOut {
+  from {
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+  to {
+    background-color: rgba(0, 0, 0, 0);
+  }
+}
+
+.modal-content {
+  max-width: 480px;
+  width: 90%;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  background-color: white;
+}
+
+.task-content {
+  min-width: 0;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.task-content h6,
+.task-content p.card-text {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}

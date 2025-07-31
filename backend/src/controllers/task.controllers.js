@@ -48,36 +48,6 @@ async function getTaskById(req, res) {
     }
 };
 
-async function getTaskByStatus(req, res) {
-    const { status } = req.params;
-    const userId = req.user.id;
-
-    try {
-        const tasks = await taskServices.getTaskByStatus(status, userId);
-        res.status(200).json(tasks);
-    } catch (error) {
-        if (error.message.includes('Forbidden')) {
-            return res.status(403).json({ message: error.message });
-        }
-        res.status(500).json({ error: error.message });
-    }
-};
-
-async function getTasksByList(req, res) {
-    const { listId } = req.params;
-    const userId = req.user.id;
-
-    try {
-        const tasks = await taskServices.getTasksByListId(listId, userId);
-        res.status(200).json(tasks);
-    } catch (error) {
-        if (error.message.includes('Forbidden')) {
-            return res.status(403).json({ message: error.message });
-        }
-        res.status(500).json({ error: error.message });
-    }
-};
-
 async function updateTask(req, res) {
     const { taskId } = req.params;
     const userId = req.user.id;
@@ -122,11 +92,43 @@ async function deleteTask(req, res) {
     }
 };
 
+async function getTasksByStatus(req, res) {
+    const { status } = req.query;
+    const userId = req.user.id;
+
+    try {
+        const tasks = await taskServices.getTasksByStatus(status, userId);
+        res.status(200).json(tasks);
+    } catch (error) {
+        if (error.message.includes('Forbidden')) {
+            return res.status(403).json({ message: error.message });
+        }
+        res.status(500).json({ error: error.message });
+    }
+};
+
+async function getTasksFromList(req, res) {
+    const { listId } = req.params;
+    const { status } = req.query;
+    const userId = req.user.id;
+
+    try {
+        const tasks = await taskServices.getTasksFromList(listId, status, userId);
+        res.status(200).json(tasks);
+    } catch (error) {
+        if (error.message.includes('Forbidden')) {
+            return res.status(403).json({ message: error.message });
+        }
+        res.status(500).json({ error: error.message });
+    }
+};
+
+
 export default {
     createTask,
     getTaskById,
-    getTaskByStatus,
-    getTasksByList,
+    getTasksByStatus,
+    getTasksFromList,
     updateTask,
     deleteTask
 };

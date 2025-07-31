@@ -12,6 +12,7 @@ router.patch('/:listId', listControllers.updateList);
 router.patch('/:listId/group', listControllers.addToGroup);
 router.delete('/:listId', listControllers.deleteList);
 
-router.get('/:listId/tasks', taskControllers.getTasksByList);
+router.get('/:listId/tasks', taskControllers.getTasksFromList);
+
 
 export default router;

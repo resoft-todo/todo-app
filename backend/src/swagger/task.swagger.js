@@ -98,6 +98,43 @@
  *         description: Forbidden - User does not own the list.
  */
 
+
+/**
+ * @swagger
+ * /api/tasks:
+ *   get:
+ *     summary: Get all of the authenticated user's tasks, by status
+ *     tags: [Tasks]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: status
+ *         description: find or filter tasks by one or more statuses
+ *         required: true
+ *         schema:
+ *           type: array
+ *           items:
+ *             type: string
+ *             enum: [not_started, in_progress, completed]
+ *         style: form
+ *         explode: true
+ *         example: /api/tasks?status=not_started&status=in_progress
+ *     responses:
+ *       200:
+ *         description: A list of the user's tasks matching the filter
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Task'
+ *       401:
+ *         description: Unauthorized.
+ *       500:
+ *         description: Internal Server Error.
+ */
+
 /**
  * @swagger
  * /api/lists/{listId}/tasks:
@@ -131,23 +168,34 @@
 
 /**
  * @swagger
- * /api/tasks/status/{status}:
+ * /api/lists/{listId}/tasks:
  *   get:
- *     summary: Get all user's tasks by status
+ *     summary: Get tasks for a specific list, filtered by status
  *     tags: [Tasks]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: status
+ *         name: listId
  *         required: true
- *         description: The status to filter tasks by.
  *         schema:
  *           type: string
- *           enum: [not_started, in_progress, completed]
+ *           format: uuid
+ *         description: The ID of the list to get tasks from.
+ *       - in: query
+ *         name: status
+ *         description: Optional. Filter tasks by one or more statuses
+ *         required: false
+ *         schema:
+ *           type: array
+ *           items:
+ *             type: string
+ *             enum: [not_started, in_progress, completed]
+ *         style: form
+ *         explode: true
  *     responses:
  *       200:
- *         description: A list of tasks filtered by the specified status.
+ *         description: A list of tasks for the specified list.
  *         content:
  *           application/json:
  *             schema:
@@ -157,38 +205,9 @@
  *       401:
  *         description: Unauthorized.
  *       403:
- *         description: Forbidden.
- *       500:
- *         description: Internal Server Error.
- */
-
-/**
- * @swagger
- * /api/tasks/{taskId}:
- *   get:
- *     summary: Get a specific task by ID
- *     tags: [Tasks]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: taskId
- *         required: true
- *         schema:
- *           type: string
- *           format: uuid
- *         description: The ID of the task to retrieve.
- *     responses:
- *       200:
- *         description: The requested task object.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Task'
- *       401:
- *         description: Unauthorized.
+ *         description: Forbidden - User does not have access to this list.
  *       404:
- *         description: Task not found or user lacks permission.
+ *         description: List not found.
  *       500:
  *         description: Internal Server Error.
  */

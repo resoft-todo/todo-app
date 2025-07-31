@@ -58,61 +58,6 @@ async function getTaskById(taskId, userId) {
     return task; 
 };
 
-/**
- * @param {string} status 
- * @param {string} userId 
- * @returns {Promise<Array<object>>}  
- */
-async function getTaskByStatus(status, userId) {
-    try {
-        if (!status) {
-            throw new Error('Status is required');
-        }
-
-        const validStatuses = ['not_started', 'in_progress', 'completed'];
-
-        if (!validStatuses.includes(status)) {
-            throw new Error(`Invalid status. Valid statuses are: ${validStatuses.join(', ')}`);
-        }
-
-        const tasks = await prisma.task.findMany({
-            where: {
-                status: status,
-                list: {
-                    userId: userId,
-                },
-            },
-            select: safeTaskSelect,
-            orderBy: { createdAt: 'desc' },
-        });
-        return tasks;
-
-    } catch (error) {
-        console.error('Error fetching tasks by status:', error);
-    }
-    
-};
-
-async function getTasksByListId(listId, userId) {
-    const list = await prisma.list.findFirst({
-        where: {
-            id: listId,
-            userId: userId,
-        }
-    });
-
-    if (!list) {
-        throw new Error("Forbidden: You do not own this list or it does not exist.");
-    }
-
-    return prisma.task.findMany({
-        where: { listId: listId },
-        select: safeTaskSelect,
-        orderBy: { createdAt: 'desc' },
-    });
-};
-
-
 async function updateTask(taskId, data, userId) {
 
     const existingTask = await getTaskById(taskId, userId);
@@ -141,11 +86,64 @@ async function deleteTask(taskId, userId) {
     return { id: taskId }; 
 }
 
+async function getTasksByStatus(status, userId) {
+    const whereClause = {
+        list: {
+            userId: userId,
+        },
+    };
+
+    if (status) {
+        const statuses = Array.isArray(status) ? status : [status];
+        whereClause.status = { in: statuses };
+    }
+
+    const tasks = await prisma.task.findMany({
+        where: whereClause,
+        select: safeTaskSelect,
+        orderBy: {
+            createdAt: 'desc',
+        }
+    });
+
+    return tasks;
+};
+
+
+async function getTasksFromList(listId, status, userId) {
+
+    const list = await prisma.list.findFirst({
+        where: {
+            id: listId,
+            userId: userId,
+        },
+    });
+
+    if (!list) {
+        throw new Error("Forbidden: You do not own this list or it does not exist.");
+    }
+
+    const queryOptions = {
+        where: {
+            listId: listId
+        }
+    };
+
+    if (status) {
+        const statuses = Array.isArray(status) ? status : [status];
+        queryOptions.where.status = { in: statuses };
+    }
+
+    const tasks = await prisma.task.findMany(queryOptions);
+    return tasks;
+}
+
+
 export default {
     createTask,
     getTaskById,
-    getTaskByStatus,
-    getTasksByListId,
     updateTask,
-    deleteTask
+    deleteTask,
+    getTasksByStatus,
+    getTasksFromList
 };

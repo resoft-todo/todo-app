@@ -10,5 +10,7 @@ router.post('/register', registerRules(), validate, authController.register);
 router.post('/login', loginRules(), validate, authController.login);
 router.post('/forgot-password', authController.requestPasswordReset);
 router.patch('/reset-password/:token', authController.resetPassword);
+router.post('/refresh', authController.refresh);
+router.post('/logout', validate, authController.logout);
 
 export default router;

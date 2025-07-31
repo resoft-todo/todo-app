@@ -31,9 +31,17 @@ async function login(req, res) {
 
     try{
         const data = await authService.loginUser(email, password);
+
+        res.cookie('refreshToken', data.refreshToken, {
+            httpOnly: true,
+            secure: false, 
+            sameSite: 'strict',
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+        });
+
         res.status(200).json({
             message: 'Login successful',
-            token: data.token,
+            accessToken: data.accessToken,
             user: data.user,
         });
     }
@@ -42,6 +50,30 @@ async function login(req, res) {
             return res.status(401).json({ message: error.message });
         }
         res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+async function refresh(req, res) {
+    try {
+        const { refreshToken } = req.cookies;
+        if (!refreshToken) {
+            return res.status(401).json({ message: 'Refresh token is missing' });
+        }
+        const data = await authService.refreshAccessToken(refreshToken);
+        res.status(200).json({ accessToken: data.accessToken });
+    } catch (error) {
+        res.status(403).json({ message: 'Invalid session. Please log in again' });
+    }
+};
+
+async function logout(req, res) {
+    try {
+        const userId = req.user.id;
+        await authService.logoutUser(userId);
+        res.clearCookie('refreshToken');
+        res.status(200).json({ message: 'Logged out successfully' });
+    } catch (error) {
+        res.status(500).json({ message: "Failed to log out" });
     }
 };
 
@@ -79,4 +111,6 @@ export default {
     login,
     requestPasswordReset,
     resetPassword,
+    refresh,
+    logout
 };

@@ -30,19 +30,68 @@ async function loginUser(email, password) {
     if (!isPasswordValid) {
         throw new Error('Invalid password');
     }
-
-    const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, {
-        expiresIn: '1h',
+    const accessToken = jwt.sign({ id: user.id, email: user.email }, process.env.ACCESS_TOKEN_SECRET, {
+        expiresIn: process.env.ACCESS_TOKEN_EXPIRATION,
     });
 
-    return { 
-        token, 
-        user: { 
-            name: user.name, 
-            email: user.email 
+    const refreshToken = jwt.sign({ id: user.id, email: user.email }, process.env.REFRESH_TOKEN_SECRET, {
+        expiresIn: process.env.REFRESH_TOKEN_EXPIRATION,
+    });
+
+    const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
+
+    await prisma.user.update({
+        where: { id: user.id },
+        data: { refreshToken: hashedRefreshToken },
+    });
+
+    return {
+        accessToken,
+        refreshToken,
+        user: {
+            name: user.name,
+            email: user.email
         } 
     };
+};
+
+/**
+ * @param {string} tokenFromCookie
+ * @return {Promise<{ accessToken: string }>}
+ */
+async function refreshAccessToken(tokenFromCookie) {
+    if (!tokenFromCookie) {
+        throw new Error("Refresh token not provided");
+    }
+
+    const decoded = jwt.verify(tokenFromCookie, process.env.REFRESH_TOKEN_SECRET);
+    const user = await prisma.user.findUnique({ where: { id: decoded.id } });
+
+    if (!user || !user.refreshToken) {
+        throw new Error("Invalid session");
+    }
+
+    const isTokenMatch = await bcrypt.compare(tokenFromCookie, user.refreshToken);
+    if (!isTokenMatch) {
+        throw new Error("Invalid session");
+    }
+
+    const newAccessToken = jwt.sign({ id: user.id, email: user.email }, process.env.ACCESS_TOKEN_SECRET, {
+        expiresIn: process.env.ACCESS_TOKEN_EXPIRATION
+    });
+
+    return { accessToken: newAccessToken };
 }
+
+/**
+ * @param {string} userId
+ */
+async function logoutUser(userId) {
+    await prisma.user.updateMany({
+        where: { id: userId, refreshToken: { not: null } },
+        data: { refreshToken: null },
+    });
+};
 
 /**
  * @param {string} email
@@ -109,4 +158,6 @@ export default {
     loginUser,
     requestPasswordReset,
     resetPassword,
+    refreshAccessToken,
+    logoutUser,
 };

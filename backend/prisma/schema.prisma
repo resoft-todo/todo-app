@@ -19,6 +19,7 @@ model User {
   email    String @unique
   password String
 
+  refreshToken         String?   @unique
   passwordResetToken   String?   @unique
   passwordResetExpires DateTime?
   lists                List[]

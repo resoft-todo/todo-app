@@ -94,6 +94,48 @@
 
 /**
  * @swagger
+ * /api/auth/refresh:
+ *   post:
+ *     summary: Refresh the access token
+ *     tags: [Auth]
+ *     description: Obtains a new access token.
+ *     responses:
+ *       200:
+ *         description: New access token generated successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 accessToken:
+ *                   type: string
+ *                   description: A new short-lived access token.
+ *       401:
+ *         description: Refresh token is missing from cookies.
+ *       403:
+ *         description: Invalid or expired refresh token. The session is no longer valid.
+ */
+
+/**
+ * @swagger
+ * /api/auth/logout:
+ *   post:
+ *     summary: User logout
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     description: Logs out the user by invalidating the current session. Requires a valid access token in the Authorization header.
+ *     responses:
+ *       200:
+ *         description: Logged out successfully.
+ *       401:
+ *         description: Unauthorized (missing access token).
+ *       403:
+ *         description: Forbidden (invalid access token).
+ */
+
+/**
+ * @swagger
  * /api/auth/forgot-password:
  *   post:
  *     summary: Initiate password reset process

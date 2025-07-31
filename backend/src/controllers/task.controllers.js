@@ -1,4 +1,5 @@
 import taskServices from '../services/task.services.js';
+import { formatDate } from '../utils/formatDate.utils.js';
 
 async function createTask(req, res) {
     const { listId, title, description, status, dueDate } = req.body;
@@ -8,8 +9,18 @@ async function createTask(req, res) {
         return res.status(400).json({ message: 'List ID and title are required' });
     }
 
+    let finalDueDate = null;
+
+    if (dueDate) {
+        try {
+            finalDueDate = formatDate(dueDate);
+        } catch (error) {
+            return res.status(400).json({ message: error.message });
+        }
+    }
+
     try {
-        const newTask = await taskServices.createTask({ listId, title, description, status, dueDate }, userId);
+        const newTask = await taskServices.createTask({ listId, title, description, status, dueDate: finalDueDate }, userId);
         res.status(201).json(newTask);
     } catch (error) {
         if (error.message.includes('Forbidden')) {
@@ -72,7 +83,18 @@ async function updateTask(req, res) {
     const userId = req.user.id;
 
     const { title, description, status, dueDate } = req.body;
-    const dataToUpdate = { title, description, status, dueDate };
+
+    let finalDueDate = null;
+
+    if (dueDate) {
+        try {
+            finalDueDate = formatDate(dueDate);
+        } catch (error) {
+            return res.status(400).json({ message: error.message });
+        }
+    }
+
+    const dataToUpdate = { title, description, status, dueDate: finalDueDate };
 
     try {
         const updatedTask = await taskServices.updateTask(taskId, dataToUpdate, userId);

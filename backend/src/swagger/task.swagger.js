@@ -44,6 +44,29 @@
  *               type: string
  *             name:
  *               type: string
+ * 
+ *     TaskInput:
+ *       type: object
+ *       required:
+ *         - title
+ *         - listId
+ *       properties:
+ *         title:
+ *           type: string
+ *         listId:
+ *           type: string
+ *           format: uuid
+ *         description:
+ *           type: string
+ *         status:
+ *           type: string
+ *           enum: [not_started, in_progress, completed]
+ *           default: not_started
+ *         dueDate:
+ *           type: string
+ *           format: date
+ *           description: Optional due date for the task in YYYY-MM-DD format
+ *           example: 2023-12-31
  */
 
 /**
@@ -202,7 +225,9 @@
  *                 enum: [not_started, in_progress, completed]
  *               dueDate:
  *                 type: string
- *                 format: date-time
+ *                 format: date
+ *                 description: Optional due date for the task in YYYY-MM-DD format
+ *                 example: 2023-12-31
  *     responses:
  *       200:
  *         description: Task updated successfully.

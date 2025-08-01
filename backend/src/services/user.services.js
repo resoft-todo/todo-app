@@ -3,7 +3,8 @@ import prisma from '../prisma.js';
 const safeUserSelect = {
     id: true,
     name: true,
-    email: true
+    email: true,
+    isNotificationOn: true
 };
 
 /**
@@ -49,6 +50,29 @@ async function changeUserName(userId, newName) {
     }
 };
 
+
+/**
+ * @param {string} userId
+ * @param {boolean} isNotificationOn
+ * @returns {Promise<object>}
+ */
+async function notificationSettings(userId, isNotificationOn){
+    try{
+        const updateUser = await prisma.user.update({
+            where: { id: userId},
+            data: {isNotificationOn: isNotificationOn},
+            select: safeUserSelect
+        });
+
+        return updateUser;
+    }
+    catch (error){
+        throw new Error('Could not update notification');
+    }
+
+}
+
+
 /**
  * @param {string} userId 
  * @returns {Promise<object>} 
@@ -71,5 +95,6 @@ export default {
     getUserById,
     getAllUsers,
     changeUserName,
+    notificationSettings,
     deleteUserById,
 };

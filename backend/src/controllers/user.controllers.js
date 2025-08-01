@@ -39,6 +39,22 @@ async function changeUserName(req, res) {
     }
 };
 
+async function notificationSettings(req, res) { 
+    try {
+        const { isNotificationOn } = req.body;
+        const userId = req.user.id;
+
+        const updatedUser = await userService.notificationSettings(userId, isNotificationOn);
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        if (error.message === 'Could not update notification') {
+            return res.status(500).json({ message: error.message });
+        }
+        res.status(500).json({ message: 'Server Error', error: error.message });
+    }
+
+}
+
 async function deleteMyProfile(req, res) {
     try {
         const userId = req.user.id;
@@ -56,6 +72,7 @@ async function deleteMyProfile(req, res) {
 export default {
     getMyProfile,
     getAllUsers,
+    notificationSettings,
     changeUserName,
     deleteMyProfile,
 };

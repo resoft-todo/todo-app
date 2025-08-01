@@ -108,6 +108,54 @@
  *         description: Server error. Could not update user name.
  */
 
+
+
+/**
+ * @swagger
+ * /api/users/me/notifications:
+ *   patch:
+ *     summary: Enable or disable notification
+ *     description: Enable or disable notification associated with the JWT token. Requires authorization.
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               isNotificationOn:
+ *                 type: boolean
+ *                 example: "true"
+ *     responses:
+ *       200:
+ *         description: User notification was updated successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: string
+ *                 name:
+ *                   type: string
+ *                 email:
+ *                   type: string
+ *                 isNotificationOn:
+ *                   type: boolean
+ *       400:
+ *         description: Bad request. Notification is required.
+ *       401:
+ *         description: Unauthorized. Token is missing or invalid.
+ *       404:
+ *         description: User not found.
+ *       500:
+ *         description: Server error. Could not update notification.
+ */
+
+
 /**
  * @swagger
  * /api/users/me:

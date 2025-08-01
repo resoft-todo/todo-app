@@ -9,6 +9,7 @@ import userRoutes from './routes/user.routes.js';
 import listRoutes from './routes/list.routes.js';
 import taskRoutes from './routes/task.routes.js';
 import groupRoutes from './routes/group.routes.js';
+import reminder  from './jobs/reminder.job.js';
 
 dotenv.config();
 
@@ -57,6 +58,9 @@ app.use('/api/users', userRoutes);
 app.use('/api/lists', listRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/groups', groupRoutes);
+
+// background job
+reminder.start();
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

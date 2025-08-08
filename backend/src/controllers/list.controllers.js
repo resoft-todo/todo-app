@@ -11,9 +11,6 @@ async function createList(req, res) {
         const newList = await listServices.createList(name, userId, groupId);
         res.status(201).json(newList);
     } catch (error) {
-        if (error.message.includes('already exists')) {
-            return res.status(409).json({ message: error.message });
-        }
         res.status(500).json({ error: error.message });
     }
 };

@@ -84,8 +84,6 @@
  *         description: Bad Request - List name is required.
  *       401:
  *         description: Unauthorized - Token is missing or invalid.
- *       409:
- *         description: Conflict - A list with this name already exists for the user.
  *       500:
  *         description: Internal Server Error.
  */

@@ -3,6 +3,7 @@ import { login } from '../../api/authService'
 import React from 'react'
 import Input from '../../components/common/Input'
 import Button from '../../components/common/Button'
+import { Link } from 'react-router-dom'
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -57,6 +58,10 @@ export default function Login() {
 
       if (response && response.user) {
         window.alert('Logged in successfully!', response.user.name)
+        setEmail('')
+        setTouchedEmail(false)
+        setPassword('')
+        setTouchedPassword(false)
       } else {
         setError('Unexpected response from server')
       }
@@ -129,7 +134,7 @@ export default function Login() {
                 </Button>
               </form>
               <p className="text-center mt-3">
-                Dont have an account? <a href="/register">Register</a>
+                Dont have an account? <Link to="/register">Register</Link>
               </p>
             </div>
           </div>

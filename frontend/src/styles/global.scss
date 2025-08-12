@@ -27,6 +27,23 @@
   --gray-900: #{$gray-900};
 }
 
+html {
+  height: 100%;
+}
+
+body {
+  background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+  min-height: 100vh;
+  height: 100%;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
 .text-primary {
   color: $primary-dark !important;
 }
@@ -92,7 +109,7 @@ s,
 
   &:focus,
   &.focus {
-    box-shadow: 0 0 0 0.2rem rgba(66, 135, 78, 0.25); // RGB з $primary-dark
+    box-shadow: 0 0 0 0.2rem rgba(66, 135, 78, 0.25);
   }
 }
 
@@ -158,13 +175,6 @@ s,
   }
 }
 
-// Body styles
-body {
-  background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
-  min-height: 100vh;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
 // Animation
 .fade-in {
   animation: fadeIn 0.5s ease-in;
@@ -214,7 +224,7 @@ body {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 
   &:hover {
-    background-color: darken($light, 10%);
+    background-color: darken($light-color, 10%);
   }
 }
 

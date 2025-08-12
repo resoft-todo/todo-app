@@ -109,9 +109,9 @@ export default function Register() {
   }
 
   return (
-    <div className="container mt-5">
+    <div className="container">
       <div className="row justify-content-center">
-        <div className="col-md-4">
+        <div className="col-md-6 col-lg-4">
           <div className="card shadow-sm">
             <div className="card-body">
               <h3 className="text-center mb-2">Register</h3>
@@ -147,6 +147,7 @@ export default function Register() {
                   <Input
                     type="email"
                     id="email"
+                    autoComplete="username"
                     value={email}
                     onChange={handleChange(setEmail)}
                     onBlur={() => handleBlur('email')}
@@ -165,6 +166,7 @@ export default function Register() {
                   <Input
                     type="password"
                     id="password"
+                    autoComplete="new-password"
                     value={password}
                     onChange={handleChange(setPassword)}
                     onBlur={() => handleBlur('password')}
@@ -183,6 +185,7 @@ export default function Register() {
                   <Input
                     type="password"
                     id="confirmPassword"
+                    autoComplete="new-password"
                     value={confirmPassword}
                     onChange={handleChange(setConfirmPassword)}
                     onBlur={() => handleBlur('confirmPassword')}

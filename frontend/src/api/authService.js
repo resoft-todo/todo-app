@@ -96,7 +96,7 @@ export async function login(email, password) {
 
 export async function register(name, email, password, confirmPassword) {
   try {
-    axios.post(
+    await axios.post(
       `${API_URL}/auth/register`,
       { name, email, password, confirmPassword },
       {
@@ -105,7 +105,10 @@ export async function register(name, email, password, confirmPassword) {
     )
     return true
   } catch (err) {
-    throw new Error(err.response.data)
+    console.error('Register failed:', err)
+    if (err.status === 400 || err.status === 401 || err.status === 409)
+      throw new Error('An account with this email already exists.')
+    else throw new Error('Server error. Please try again later.')
   }
 }
 

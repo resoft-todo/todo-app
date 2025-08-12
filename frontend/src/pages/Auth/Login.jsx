@@ -73,9 +73,9 @@ export default function Login() {
   }
 
   return (
-    <div className="container mt-5">
+    <div className="container">
       <div className="row justify-content-center">
-        <div className="col-md-4">
+        <div className="col-md-6 col-lg-4">
           <div className="card shadow-sm">
             <div className="card-body">
               <h3 className="text-center mb-2">Login</h3>
@@ -91,8 +91,8 @@ export default function Login() {
                   </label>
                   <Input
                     type="email"
-                    className="form-control"
                     id="email"
+                    autoComplete="username"
                     value={email}
                     onChange={onEmailChange}
                     onBlur={onEmailBlur}
@@ -110,8 +110,8 @@ export default function Login() {
                   </label>
                   <Input
                     type="password"
-                    className="form-control"
                     id="password"
+                    autoComplete="current-password"
                     value={password}
                     onChange={onPasswordChange}
                     onBlur={onPasswordBlur}

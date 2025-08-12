@@ -25,7 +25,7 @@
  *           nullable: true
  *         status:
  *           type: string
- *           enum: [not_started, in_progress, completed]
+ *           enum: [not_started, completed]
  *           default: not_started
  *         dueDate:
  *           type: string
@@ -60,7 +60,7 @@
  *           type: string
  *         status:
  *           type: string
- *           enum: [not_started, in_progress, completed]
+ *           enum: [not_started, completed]
  *           default: not_started
  *         dueDate:
  *           type: string
@@ -116,7 +116,7 @@
  *           type: array
  *           items:
  *             type: string
- *             enum: [not_started, in_progress, completed]
+ *             enum: [not_started, completed]
  *         style: form
  *         explode: true
  *         example: /api/tasks?status=not_started&status=in_progress
@@ -190,7 +190,7 @@
  *           type: array
  *           items:
  *             type: string
- *             enum: [not_started, in_progress, completed]
+ *             enum: [not_started, completed]
  *         style: form
  *         explode: true
  *     responses:
@@ -241,7 +241,7 @@
  *                 type: string
  *               status:
  *                 type: string
- *                 enum: [not_started, in_progress, completed]
+ *                 enum: [not_started, completed]
  *               dueDate:
  *                 type: string
  *                 format: date

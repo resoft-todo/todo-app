@@ -7,6 +7,10 @@ async function createList(req, res) {
         return res.status(400).json({ message: 'List name is required' });
     }
 
+    if(!userId){
+        return res.status(401).json({ message: 'Unauthorized'});
+    }
+
     try {
         const newList = await listServices.createList(name, userId, groupId);
         res.status(201).json(newList);
@@ -17,6 +21,10 @@ async function createList(req, res) {
 
 async function getUserLists(req, res) {
     const userId = req.user.id; 
+
+    if(!userId){
+        return res.status(401).json({ message: 'Unauthorized'});
+    }
 
     try {
         const lists = await listServices.getUserLists(userId);
@@ -29,6 +37,10 @@ async function getUserLists(req, res) {
 async function getListById(req, res) {
     const { listId } = req.params;
     const userId = req.user.id;
+
+    if(!userId){
+        return res.status(401).json({ message: 'Unauthorized'});
+    }
 
     try {
         const list = await listServices.getListById(listId, userId);
@@ -50,6 +62,11 @@ async function updateList(req, res) {
         return res.status(400).json({ message: 'List name is required' });
     }
 
+    if(!userId){
+        return res.status(401).json({ message: 'Unauthorized'});
+    }
+
+
     try {
         const updatedList = await listServices.updateListName(listId, name, userId);
         if (!updatedList) {
@@ -65,7 +82,11 @@ async function addToGroup(req, res) {
     const { listId } = req.params;
     const { groupId } = req.body;
     const userId = req.user.id;
-    
+
+    if(!userId){
+        return res.status(401).json({ message: 'Unauthorized'});
+    }
+
     if (!groupId) {
         return res.status(400).json({ message: 'Group ID is required' });
     }
@@ -84,6 +105,10 @@ async function deleteList(req, res) {
     const { listId } = req.params;
     const userId = req.user.id;
 
+    if(!userId){
+        return res.status(401).json({ message: 'Unauthorized'});
+    }
+    
     try {
         const deletedList = await listServices.deleteList(listId, userId);
         if (!deletedList) {

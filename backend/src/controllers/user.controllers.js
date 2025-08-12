@@ -3,6 +3,10 @@ import userService from '../services/user.services.js';
 async function getMyProfile(req, res) {
     try {
         const userId = req.user.id;
+        
+        if(!userId){
+            return res.status(401).json({ message: 'Unauthorized'});
+        }
         const userProfile = await userService.getUserById(userId);
         res.status(200).json(userProfile);
     } catch (error) {
@@ -22,9 +26,15 @@ async function getAllUsers(req, res) {
     }
 };
 
+
 async function changeUserName(req, res) {
     try {
         const userId = req.user.id;
+
+        if(!userId){
+            return res.status(401).json({ message: 'Unauthorized'});
+        }
+
         const { newName } = req.body;
         if (!newName) {
             return res.status(400).json({ message: 'New name is required.' });
@@ -44,6 +54,10 @@ async function notificationSettings(req, res) {
         const { isNotificationOn } = req.body;
         const userId = req.user.id;
 
+        if(!userId) {
+                return res.status(401).json({ message: 'Unauthorized'});
+        }
+
         const updatedUser = await userService.notificationSettings(userId, isNotificationOn);
         res.status(200).json(updatedUser);
     } catch (error) {
@@ -58,6 +72,10 @@ async function notificationSettings(req, res) {
 async function deleteMyProfile(req, res) {
     try {
         const userId = req.user.id;
+
+        if(!userId) {
+            return res.status(401).json({ message: 'Unauthorized'});
+        }
         await userService.deleteUserById(userId);
         res.status(200).json({ message: 'User profile deleted successfully.' });
     } catch (error) {

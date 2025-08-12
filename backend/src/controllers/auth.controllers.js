@@ -15,9 +15,6 @@ async function register(req, res) {
         });
     }
     catch (error) {
-        if (error.message.includes('already exists')) {
-            return res.status(409).json({ message: error.message });
-        }
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
@@ -46,7 +43,7 @@ async function login(req, res) {
         });
     }
     catch (error) {
-        if (error.message.includes('invalid credentials')) {
+        if (error.message.includes('Invalid credentials')) {
             return res.status(401).json({ message: error.message });
         }
         res.status(500).json({ message: 'Server error', error: error.message });
@@ -69,6 +66,9 @@ async function refresh(req, res) {
 async function logout(req, res) {
     try {
         const userId = req.user.id;
+        if(!userId){
+            return res.status(401).json({ message: 'Unauthorized'});
+        }
         await authService.logoutUser(userId);
         res.clearCookie('refreshToken');
         res.status(200).json({ message: 'Logged out successfully' });

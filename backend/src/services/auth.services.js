@@ -23,12 +23,12 @@ async function loginUser(email, password) {
     });
 
     if (!user) {
-        throw new Error('User not found');
+        throw new Error('Invalid credentials');
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-        throw new Error('Invalid password');
+        throw new Error('Invalid credentials');
     }
     const accessToken = jwt.sign({ id: user.id, email: user.email }, process.env.ACCESS_TOKEN_SECRET, {
         expiresIn: process.env.ACCESS_TOKEN_EXPIRATION,

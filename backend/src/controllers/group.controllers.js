@@ -7,19 +7,24 @@ async function createGroup(req, res) {
         return res.status(400).json({ message: 'Group name is required' });
     }
 
+    if(!userId){
+        return res.status(401).json({ message: 'Unauthorized'});
+    }
+
     try{
         const newGroup = await groupService.createGroup({ name, userId });
         res.status(201).json(newGroup);
     } catch (error) {
-        if (error.message.includes('already exists')) {
-            return res.status(409).json({ message: error.message });
-        }
         res.status(500).json({ error: error.message });
     }
 };
 
 async function getUserGroups(req, res) {
     const userId = req.user.id; 
+
+    if(!userId){
+        return res.status(401).json({ message: 'Unauthorized'});
+    }
 
     try {
         const groups = await groupService.getUserGroups(userId);
@@ -33,6 +38,10 @@ async function getUserGroups(req, res) {
 async function getGroupById(req, res) {
     const { groupId } = req.params;
     const userId = req.user.id;
+
+    if(!userId){
+        return res.status(401).json({ message: 'Unauthorized'});
+    }
 
     try {
         const group = await groupService.getGroupById(groupId, userId);
@@ -53,6 +62,10 @@ async function updateGroupName(req, res) {
     if (!name) {
         return res.status(400).json({ message: 'Group name is required' });
     }
+    
+    if(!userId){
+        return res.status(401).json({ message: 'Unauthorized'});
+    }
 
     try {
         const updatedGroup = await groupService.updateGroupName(groupId, name, userId);
@@ -69,6 +82,10 @@ async function deleteGroup(req, res) {
     const { groupId } = req.params;
     const userId = req.user.id;
 
+    if(!userId){
+        return res.status(401).json({ message: 'Unauthorized'});
+    }
+    
     try {
         const deletedGroup = await groupService.deleteGroup(groupId, userId);
         if (!deletedGroup) {

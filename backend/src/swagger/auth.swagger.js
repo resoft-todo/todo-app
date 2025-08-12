@@ -40,7 +40,7 @@
  *                 description: "User's confirm password (min. 6 characters, at least one uppercase letter, one lowercase letter, and one number)."
  *     responses:
  *       201:
- *         description: User registered successfully.
+ *         description: User registered successfully. 
  *       400:
  *         description: Invalid input data.
  *       409:
@@ -88,6 +88,8 @@
  *                       type: string
  *                     email:
  *                       type: string
+ *       400:
+ *         description: Invalid input data.
  *       401:
  *         description: Invalid credentials.
  */
@@ -130,8 +132,8 @@
  *         description: Logged out successfully.
  *       401:
  *         description: Unauthorized (missing access token).
- *       403:
- *         description: Forbidden (invalid access token).
+ *       500:
+ *         description: Server error.
  */
 
 /**

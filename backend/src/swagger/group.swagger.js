@@ -74,8 +74,6 @@
  *         description: Bad Request - Group name is required.
  *       401:
  *         description: Unauthorized - Token is missing or invalid.
- *       409:
- *         description: Conflict - A group with this name may already exist.
  *       500:
  *         description: Internal Server Error.
  */
@@ -128,8 +126,6 @@
  *               $ref: '#/components/schemas/Group'
  *       401:
  *         description: Unauthorized.
- *       403:
- *         description: Forbidden - You do not have permission to view this group.
  *       404:
  *         description: Group not found.
  *       500:
@@ -175,8 +171,6 @@
  *         description: Bad Request - Group name is required.
  *       401:
  *         description: Unauthorized.
- *       403:
- *         description: Forbidden - You do not have permission to edit this group.
  *       404:
  *         description: Group not found.
  *       500:
@@ -204,8 +198,6 @@
  *         description: No Content - Group deleted successfully.
  *       401:
  *         description: Unauthorized.
- *       403:
- *         description: Forbidden - You do not have permission to delete this group.
  *       404:
  *         description: Group not found.
  *       500:

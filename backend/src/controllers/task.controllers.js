@@ -9,6 +9,10 @@ async function createTask(req, res) {
         return res.status(400).json({ message: 'List ID and title are required' });
     }
 
+    if(!userId){
+        return res.status(401).json({ message: 'Unauthorized'});
+    }
+
     let finalDueDate = null;
 
     if (dueDate) {
@@ -34,6 +38,10 @@ async function getTaskById(req, res) {
     const { taskId } = req.params;
     const userId = req.user.id;
 
+    if(!userId){
+        return res.status(401).json({ message: 'Unauthorized'});
+    }
+
     try {
         const task = await taskServices.getTaskById(taskId, userId);
         if (!task) {
@@ -51,6 +59,10 @@ async function getTaskById(req, res) {
 async function updateTask(req, res) {
     const { taskId } = req.params;
     const userId = req.user.id;
+
+    if(!userId){
+        return res.status(401).json({ message: 'Unauthorized'});
+    }
 
     const { title, description, status, dueDate } = req.body;
 
@@ -81,6 +93,10 @@ async function deleteTask(req, res) {
     const { taskId } = req.params;
     const userId = req.user.id;
 
+    if(!userId){
+        return res.status(401).json({ message: 'Unauthorized'});
+    }
+
     try {
         const deletedTask = await taskServices.deleteTask(taskId, userId);
         if (!deletedTask) {
@@ -95,6 +111,10 @@ async function deleteTask(req, res) {
 async function getTasksByStatus(req, res) {
     const { status } = req.query;
     const userId = req.user.id;
+
+    if(!userId){
+        return res.status(401).json({ message: 'Unauthorized'});
+    }
 
     try {
         const tasks = await taskServices.getTasksByStatus(status, userId);
@@ -112,6 +132,10 @@ async function getTasksFromList(req, res) {
     const { status } = req.query;
     const userId = req.user.id;
 
+    if(!userId){
+        return res.status(401).json({ message: 'Unauthorized'});
+    }
+    
     try {
         const tasks = await taskServices.getTasksFromList(listId, status, userId);
         res.status(200).json(tasks);

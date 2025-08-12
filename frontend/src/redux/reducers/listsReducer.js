@@ -45,7 +45,7 @@ export const listsReducer = (state = initialState, action) => {
         ),
       }
 
-    case DELETE_LIST_SUCCESS:
+    case DELETE_LIST_SUCCESS: {
       const newItems = state.items.filter((list) => list.id !== action.payload)
       return {
         ...state,
@@ -57,6 +57,7 @@ export const listsReducer = (state = initialState, action) => {
               : null
             : state.selectedListId,
       }
+    }
     case SELECT_LIST:
       return { ...state, selectedListId: action.payload }
     default:

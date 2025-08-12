@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react'
-import styles from './styles.module.scss'
-import { Navigate, Outlet } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { Outlet, Navigate } from 'react-router-dom'
 import { getAccessToken, refreshAccessToken } from '../../api/authService'
 
-export default function AuthLayout() {
-  const [isAuthenticated, setIsAuthenticated] = useState(null)
+export default function PrivateLayout() {
+  const [isAuthenticated, setIsAuthenticated] = useState(null) // null = loading
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
@@ -34,19 +33,20 @@ export default function AuthLayout() {
         <div className="spinner-border text-primary" role="status">
           <span className="visually-hidden">Loading...</span>
         </div>
+        <p className="mt-3 text-muted">Checking authentication...</p>
       </div>
     )
   }
 
-  if (isAuthenticated) {
-    return <Navigate to="/" replace />
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />
   }
 
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.content}>
+    <div className="protected-app">
+      <main className="main-content">
         <Outlet />
-      </div>
+      </main>
     </div>
   )
 }

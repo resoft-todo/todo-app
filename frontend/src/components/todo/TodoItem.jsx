@@ -6,7 +6,8 @@ const TodoItem = ({ task, onToggle, onEdit, onDelete, loading = false }) => {
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false)
 
   const handleToggle = () => {
-    onToggle(task._id, !task.isCompleted)
+    const newStatus = task.status !== 'completed'
+    onToggle(task.id, newStatus)
   }
 
   const handleEdit = () => {
@@ -14,7 +15,7 @@ const TodoItem = ({ task, onToggle, onEdit, onDelete, loading = false }) => {
   }
 
   const handleDeleteClick = () => {
-    onDelete(task._id)
+    onDelete(task.id)
   }
 
   const toggleDescription = () => {
@@ -23,24 +24,25 @@ const TodoItem = ({ task, onToggle, onEdit, onDelete, loading = false }) => {
 
   const formatDate = (dateString) => {
     if (!dateString) return ''
-    const date = new Date(dateString)
-    return date.toLocaleDateString('uk-UA', {
+    const dateOnly = dateString.split('T')[0]
+    const date = new Date(dateOnly + 'T00:00:00')
+    return date.toLocaleDateString({
       year: 'numeric',
       month: 'short',
       day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
     })
   }
 
   return (
-    <div className={`card ${task.isCompleted ? 'task-completed' : ''}`}>
+    <div
+      className={`card ${task.status === 'completed' ? 'task-completed' : ''}`}
+    >
       <div className="card-body">
-        <div className="d-flex align-items-start">
+        <div className="d-flex align-items-start justify-content-center">
           <div className={'me-3'}>
             <Checkbox
-              id={task._id}
-              checked={task.isCompleted}
+              id={task.id}
+              checked={task.status === 'completed'}
               onChange={handleToggle}
               disabled={loading}
             />
@@ -51,7 +53,7 @@ const TodoItem = ({ task, onToggle, onEdit, onDelete, loading = false }) => {
               <div className={'task-content'}>
                 <div className="d-flex align-items-center">
                   <h6
-                    className={`card-title mb-2 ${task.isCompleted ? 'text-decoration-line-through text-muted' : ''}`}
+                    className={`card-title mb-0 ${task.status === 'completed' ? 'text-decoration-line-through text-muted' : ''}`}
                   >
                     {task.title}
                   </h6>
@@ -71,16 +73,16 @@ const TodoItem = ({ task, onToggle, onEdit, onDelete, loading = false }) => {
 
                 {task.description && isDescriptionExpanded && (
                   <p
-                    className={`card-text small mb-2 ${task.isCompleted ? 'text-muted' : 'text-gray'}`}
+                    className={`card-text small mb-2 ${task.status === 'completed' ? 'text-muted' : 'text-gray'}`}
                   >
                     {task.description}
                   </p>
                 )}
 
-                {task.createdAt && (
+                {task.dueDate && (
                   <div className="text-muted small">
                     <i className={`fas fa-clock me-1`}></i>
-                    {formatDate(task.createdAt)}
+                    {formatDate(task.dueDate)}
                   </div>
                 )}
               </div>

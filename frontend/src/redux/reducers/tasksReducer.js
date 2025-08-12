@@ -17,7 +17,7 @@ const initialState = {
 
 export const tasksReducer = (state = initialState, action) => {
   switch (action.type) {
-    case FETCH_TASKS_REQUEST:
+    case FETCH_TASKS_REQUEST: {
       const { listId: requestListId } = action.payload
       return {
         ...state,
@@ -30,7 +30,8 @@ export const tasksReducer = (state = initialState, action) => {
           [requestListId]: null,
         },
       }
-    case FETCH_TASKS_SUCCESS:
+    }
+    case FETCH_TASKS_SUCCESS: {
       const { tasks, listId: successListId } = action.payload
       return {
         ...state,
@@ -47,7 +48,8 @@ export const tasksReducer = (state = initialState, action) => {
           [successListId]: null,
         },
       }
-    case FETCH_TASKS_FAILURE:
+    }
+    case FETCH_TASKS_FAILURE: {
       const { error, listId: failureListId } = action.payload
       return {
         ...state,
@@ -60,7 +62,8 @@ export const tasksReducer = (state = initialState, action) => {
           [failureListId]: error,
         },
       }
-    case CREATE_TASK_SUCCESS:
+    }
+    case CREATE_TASK_SUCCESS: {
       const newTask = action.payload
       const taskListId = newTask.list?.id || newTask.listId
 
@@ -71,7 +74,8 @@ export const tasksReducer = (state = initialState, action) => {
           [taskListId]: [...(state.byListId[taskListId] || []), newTask],
         },
       }
-    case UPDATE_TASK_SUCCESS:
+    }
+    case UPDATE_TASK_SUCCESS: {
       const updatedTask = action.payload
       const updatedTaskListId = updatedTask.list?.id || updatedTask.listId
 
@@ -84,7 +88,8 @@ export const tasksReducer = (state = initialState, action) => {
           ),
         },
       }
-    case DELETE_TASK_SUCCESS:
+    }
+    case DELETE_TASK_SUCCESS: {
       const { taskId, listId: deleteListId } = action.payload
       return {
         ...state,
@@ -95,8 +100,8 @@ export const tasksReducer = (state = initialState, action) => {
           ),
         },
       }
-
-    case CLEAR_TASKS_FOR_LIST:
+    }
+    case CLEAR_TASKS_FOR_LIST: {
       const listIdToClear = action.payload
       const newByListId = { ...state.byListId }
       const newLoading = { ...state.loading }
@@ -112,8 +117,9 @@ export const tasksReducer = (state = initialState, action) => {
         loading: newLoading,
         error: newError,
       }
+    }
 
-    case DELETE_LIST_SUCCESS:
+    case DELETE_LIST_SUCCESS: {
       const deletedListId = action.payload
       const cleanByListId = { ...state.byListId }
       const cleanLoading = { ...state.loading }
@@ -129,6 +135,7 @@ export const tasksReducer = (state = initialState, action) => {
         loading: cleanLoading,
         error: cleanError,
       }
+    }
 
     default:
       return state

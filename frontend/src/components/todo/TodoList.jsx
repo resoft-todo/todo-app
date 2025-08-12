@@ -4,8 +4,8 @@ import TodoItem from './TodoItem'
 const TodoList = ({ tasks, onToggle, onEdit, onDelete, loading = false }) => {
   const [showCompleted, setShowCompleted] = useState(true)
 
-  const activeTasks = tasks.filter((task) => !task.isCompleted)
-  const completedTasks = tasks.filter((task) => task.isCompleted)
+  const activeTasks = tasks.filter((task) => task.status !== 'completed')
+  const completedTasks = tasks.filter((task) => task.status === 'completed')
 
   const toggleCompleted = () => {
     setShowCompleted(!showCompleted)
@@ -27,7 +27,7 @@ const TodoList = ({ tasks, onToggle, onEdit, onDelete, loading = false }) => {
       {activeTasks.length > 0 && (
         <div className="active-tasks d-flex flex-column gap-1 mb-4">
           {activeTasks.map((task) => (
-            <div key={task._id}>
+            <div key={task.id}>
               <TodoItem
                 task={task}
                 onToggle={onToggle}
@@ -59,7 +59,7 @@ const TodoList = ({ tasks, onToggle, onEdit, onDelete, loading = false }) => {
           {showCompleted && (
             <div className="d-flex flex-column gap-1">
               {completedTasks.map((task) => (
-                <div key={task._id}>
+                <div key={task.id}>
                   <TodoItem
                     task={task}
                     onToggle={onToggle}

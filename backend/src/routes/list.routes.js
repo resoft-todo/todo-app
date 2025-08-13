@@ -10,6 +10,7 @@ router.get('/', listControllers.getUserLists);
 router.get('/:listId', listControllers.getListById);
 router.patch('/:listId', listControllers.updateList);
 router.patch('/:listId/group', listControllers.addToGroup);
+router.delete('/:listId/group', listControllers.removeFromGroup);
 router.delete('/:listId', listControllers.deleteList);
 
 router.get('/:listId/tasks', taskControllers.getTasksFromList);

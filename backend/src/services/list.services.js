@@ -153,6 +153,38 @@ async function addToGroup(listId, groupId, userId) {
 /**
  * @param {string} listId
  * @param {string} userId
+ * @returns {Promise<Object||null>}
+ */
+
+async function removeFromGroup(listId, userId){
+    try{
+        const existingList = await prisma.list.findUnique({
+            where: {
+                id: listId,
+                userId: userId
+            }
+        });
+
+        if(!existingList) {
+            throw new Error('List not found')
+        }
+        
+        const updateList = await prisma.list.update({
+            where: { id: listId },
+            data: { groupId: null },
+            select: savelistSelect
+        });
+
+        return updateList;
+    } catch(error) {
+        throw new Error('Could not remove list from group');
+    }
+};
+
+
+/**
+ * @param {string} listId
+ * @param {string} userId
  * @returns {Promise<Object|null>}
  */
 async function deleteList(listId, userId) {
@@ -185,5 +217,6 @@ export default {
     addToGroup,
     getListById,
     updateListName,
+    removeFromGroup,
     deleteList,
 };

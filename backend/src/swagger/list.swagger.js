@@ -234,6 +234,37 @@
 
 /**
  * @swagger
+ * /api/lists/{listId}/group:
+ *   delete:
+ *     summary: Remove a list from a group
+ *     tags: [Lists]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: listId
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         required: true
+ *         description: The ID of the list to be removed from the group.
+ *     responses:
+ *       200:
+ *         description: The list was successfully removed from the group.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/List'
+ *       401:
+ *         description: Unauthorized - User is not authenticated.
+ *       404:
+ *         description: Not Found.
+ *       500:
+ *         description: Internal Server Error.
+ */
+
+/**
+ * @swagger
  * /api/lists/{listId}:
  *   delete:
  *     summary: Delete a list by ID

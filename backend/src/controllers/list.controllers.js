@@ -101,6 +101,27 @@ async function addToGroup(req, res) {
     }
 };
 
+
+async function removeFromGroup(req, res) {
+    const { listId } = req.params;
+    const userId = req.user.id;
+
+    if(!userId){
+        return res.status(401).json({ message: 'Unauthorized'});
+    }
+
+    try {
+        const updatedList = await listServices.removeFromGroup(listId, userId);
+        if (!updatedList) {
+            return res.status(404).json({ message: 'List not found' });
+        }
+        res.status(200).json(updatedList);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+
 async function deleteList(req, res) {
     const { listId } = req.params;
     const userId = req.user.id;
@@ -125,6 +146,7 @@ export default {
     getUserLists,
     getListById,
     updateList,
+    removeFromGroup,
     addToGroup,
     deleteList
 };

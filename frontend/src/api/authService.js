@@ -5,6 +5,8 @@ const API_URL = 'http://localhost:8000/api'
 const ACCESS_TOKEN_KEY = 'accessToken'
 const USER_KEY = 'user'
 
+export const authEvents = new EventTarget()
+
 export function getAccessToken() {
   return localStorage.getItem(ACCESS_TOKEN_KEY)
 }
@@ -15,6 +17,12 @@ export function setAccessToken(token) {
   } else {
     localStorage.removeItem(ACCESS_TOKEN_KEY)
   }
+
+  authEvents.dispatchEvent(
+    new CustomEvent('tokenChanged', {
+      detail: { token },
+    })
+  )
 }
 
 export function getStoredUser() {
@@ -28,9 +36,17 @@ export function setStoredUser(userObj) {
   } else {
     localStorage.removeItem(USER_KEY)
   }
+
+  authEvents.dispatchEvent(
+    new CustomEvent('userChanged', {
+      detail: { user: userObj },
+    })
+  )
 }
 
 export async function refreshAccessToken() {
+  console.log('🔄 Starting token refresh...')
+
   try {
     const res = await axios.post(
       `${API_URL}/auth/refresh`,
@@ -53,17 +69,25 @@ export async function refreshAccessToken() {
       console.error('Refresh response does not contain accessToken')
       return null
     }
-
+    console.log('Token refreshed successfully')
     setAccessToken(newAccess)
     return newAccess
   } catch (err) {
-    if (
-      err.response &&
-      (err.response.status === 401 || err.response.status === 403)
-    ) {
+    console.error(
+      'Error while refreshing token:',
+      err?.response?.status,
+      err?.message
+    )
+
+    if (err.response?.status === 401 || err.response?.status === 403) {
+      console.log('Refresh token expired or invalid, user needs to re-login')
+      // Очищуємо токени
+      setAccessToken(null)
+      setStoredUser(null)
       return null
     }
-    console.error('Error while refreshing token:', err)
+
+    console.log('Network or server error during refresh')
     return null
   }
 }
@@ -120,8 +144,5 @@ export async function logout() {
   } finally {
     setAccessToken(null)
     setStoredUser(null)
-    if (typeof window !== 'undefined') {
-      window.location.href = '/login'
-    }
   }
 }

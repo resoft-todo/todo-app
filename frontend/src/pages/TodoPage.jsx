@@ -10,10 +10,8 @@ import {
   selectActiveListTasksError,
   selectActiveListTasksLoading,
   selectAllLists,
-  selectListsLoading,
   selectSelectedListId,
 } from '../redux/selectors'
-import { fetchListsAction } from '../redux/actions/listsAction'
 import {
   createTaskAction,
   deleteTaskAction,
@@ -25,7 +23,6 @@ const TodoPage = () => {
   const dispatch = useDispatch()
 
   const lists = useSelector(selectAllLists)
-  const listsLoading = useSelector(selectListsLoading)
   const selectedListId = useSelector(selectSelectedListId)
   const tasks = useSelector(selectActiveListTasks)
   const tasksLoading = useSelector(selectActiveListTasksLoading)
@@ -36,10 +33,6 @@ const TodoPage = () => {
   const [showForm, setShowForm] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
   const [taskToDelete, setTaskToDelete] = useState(null)
-
-  useEffect(() => {
-    dispatch(fetchListsAction())
-  }, [dispatch])
 
   useEffect(() => {
     if (selectedListId) {
@@ -155,32 +148,17 @@ const TodoPage = () => {
     setError(null)
   }
 
-  if (listsLoading && lists.length === 0) {
+  if (!selectedListId) {
     return (
-      <div className="d-flex justify-content-center align-items-center vh-100">
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
-        <p className="mt-3 text-muted">Loading lists...</p>
-      </div>
-    )
-  }
-
-  if (!listsLoading && lists.length === 0) {
-    return (
-      <div className="min-vh-100 py-4">
-        <div className="container">
-          <div className="row justify-content-center">
-            <div className="col-12 col-lg-10 col-xl-8">
-              <div className="text-center py-5">
-                <i className="fas fa-list-ul fa-3x text-muted mb-3"></i>
-                <h3 className="text-muted">No lists found</h3>
-                <p className="text-muted">
-                  Create your first list to get started.
-                </p>
-              </div>
-            </div>
-          </div>
+      <div className="d-flex align-items-center justify-content-center h-100">
+        <div className="text-center">
+          <i className="fas fa-list-ul fa-4x text-muted mb-4"></i>
+          <h3 className="text-muted mb-3">No List Selected</h3>
+          <p className="text-muted">
+            {lists.length === 0
+              ? 'Create your first list to get started with organizing your tasks.'
+              : 'Select a list from the sidebar to view and manage your tasks.'}
+          </p>
         </div>
       </div>
     )

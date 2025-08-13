@@ -34,9 +34,9 @@ model List {
   updatedAt DateTime @updatedAt
 
   userId  String  @db.Uuid
-  user    User    @relation(fields: [userId], references: [id])
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   groupId String? @db.Uuid
-  group   Group?  @relation(fields: [groupId], references: [id])
+  group   Group?  @relation(fields: [groupId], references: [id], onDelete: Cascade)
 
   tasks Task[]
 }
@@ -49,7 +49,7 @@ model Group {
   updatedAt DateTime @updatedAt
 
   userId String @db.Uuid
-  user   User   @relation("GroupCreator", fields: [userId], references: [id])
+  user   User   @relation("GroupCreator", fields: [userId], references: [id], onDelete: Cascade)
   lists  List[]
 }
 
@@ -63,5 +63,5 @@ model Task {
   updatedAt   DateTime   @updatedAt
 
   listId String @db.Uuid
-  list   List   @relation(fields: [listId], references: [id])
+  list   List   @relation(fields: [listId], references: [id], onDelete: Cascade)
 }

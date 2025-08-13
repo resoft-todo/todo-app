@@ -100,7 +100,7 @@ async function requestPasswordReset(email) {
     const user = await prisma.user.findUnique({ where: { email } });
 
     if (!user) {
-        return;
+        throw new Error('Invalid credentials');
     }
 
     const resetToken = crypto.randomBytes(32).toString('hex');

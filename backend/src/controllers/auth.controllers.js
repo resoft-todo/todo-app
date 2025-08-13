@@ -66,14 +66,23 @@ async function refresh(req, res) {
 async function logout(req, res) {
     try {
         const userId = req.user.id;
+        
         if(!userId){
             return res.status(401).json({ message: 'Unauthorized'});
         }
+
         await authService.logoutUser(userId);
-        res.clearCookie('refreshToken');
+
+        res.clearCookie('refreshToken', {
+            httpOnly: true,
+            secure: false, 
+            sameSite: 'strict',
+            path: '/' 
+        });
+
         res.status(200).json({ message: 'Logged out successfully' });
     } catch (error) {
-        res.status(500).json({ message: "Failed to log out" });
+        res.status(500).json({ message: 'Internal server error' });
     }
 };
 
@@ -86,6 +95,11 @@ async function requestPasswordReset(req, res) {
         await authService.requestPasswordReset(email);
         res.status(200).json({ message: 'Password reset email sent if the email exists' });
     } catch (error) {
+        
+        if(error.message.includes('Invalid credentials')){
+            return res.status(400).json({ message: 'Bad request', error: error.message });
+        }
+
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 };

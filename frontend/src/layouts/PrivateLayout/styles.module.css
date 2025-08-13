@@ -1,6 +1,6 @@
 .sidebar {
   width: 280px;
-  transition: width 0.3s ease;
+  transition: width 0.3s ease, left 0.3s ease;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -62,11 +62,40 @@
 
 .mainContent {
   flex: 1;
-  overflow: hidden;
-  background-color: #ffffff;
+  overflow: auto;
+  position: relative;
+}
+
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1045;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.mobileHeader {
+  display: none;
+  padding: 0.5rem 1rem;
+  background-color: #fff;
+  border-bottom: 1px solid #dee2e6;
 }
 
 @media (max-width: 768px) {
+  .layoutWrapper {
+    overflow-x: hidden;
+  }
   .sidebar {
     position: fixed;
     top: 0;
@@ -78,12 +107,22 @@
     transition: left 0.3s ease;
   }
   .sidebar.show {
-    left: 0;
+    left: 0 !important;
   }
   .sidebar.collapsed {
+    width: 280px !important;
+  }
+  .sidebar:not(.show) {
     left: -280px;
   }
+  .desktopToggleBtn {
+    display: none;
+  }
+  .mobileHeader {
+    display: block;
+  }
   .mainContent {
+    width: 100%;
     margin-left: 0;
   }
 }

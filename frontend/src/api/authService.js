@@ -5,8 +5,6 @@ const API_URL = 'http://localhost:8000/api'
 const ACCESS_TOKEN_KEY = 'accessToken'
 const USER_KEY = 'user'
 
-export const authEvents = new EventTarget()
-
 export function getAccessToken() {
   return localStorage.getItem(ACCESS_TOKEN_KEY)
 }
@@ -17,12 +15,6 @@ export function setAccessToken(token) {
   } else {
     localStorage.removeItem(ACCESS_TOKEN_KEY)
   }
-
-  authEvents.dispatchEvent(
-    new CustomEvent('tokenChanged', {
-      detail: { token },
-    })
-  )
 }
 
 export function getStoredUser() {
@@ -36,12 +28,6 @@ export function setStoredUser(userObj) {
   } else {
     localStorage.removeItem(USER_KEY)
   }
-
-  authEvents.dispatchEvent(
-    new CustomEvent('userChanged', {
-      detail: { user: userObj },
-    })
-  )
 }
 
 export async function refreshAccessToken() {

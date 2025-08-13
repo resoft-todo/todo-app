@@ -167,7 +167,7 @@ const TodoPage = () => {
   const selectedList = lists.find((list) => list.id === selectedListId)
 
   return (
-    <div className="min-vh-100 py-4">
+    <div className="py-4">
       <div className="container">
         <div className="row justify-content-center">
           <div className="col-12 col-lg-10 col-xl-8">
@@ -233,8 +233,8 @@ const TodoPage = () => {
 
               {selectedListId && (
                 <Button
-                  className="rounded-btn"
-                  variant="light"
+                  className="rounded-btn shadow-sm"
+                  variant="primary"
                   onClick={() => {
                     setShowForm((prev) => !prev)
                     setEditingTask(null)

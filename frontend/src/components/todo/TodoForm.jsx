@@ -14,6 +14,7 @@ const TodoForm = ({
   const [formData, setFormData] = useState({
     title: editTask ? editTask.title : '',
     description: editTask ? editTask.description : '',
+    dueDate: editTask && editTask.dueDate ? editTask.dueDate.split('T')[0] : '',
   })
   const [isClosing, setIsClosing] = useState(false)
 
@@ -21,6 +22,8 @@ const TodoForm = ({
     setFormData({
       title: editTask ? editTask.title : '',
       description: editTask ? editTask.description : '',
+      dueDate:
+        editTask && editTask.dueDate ? editTask.dueDate.split('T')[0] : '',
     })
   }, [editTask])
   const isEditing = !!editTask
@@ -35,12 +38,18 @@ const TodoForm = ({
     handleCancel()
 
     if (formData.title.trim()) {
-      if (isEditing) {
-        onSubmit({ ...editTask, ...formData })
-      } else {
-        onSubmit({ ...formData })
+      const submitData = { ...formData }
+
+      if (!submitData.dueDate) {
+        submitData.dueDate = null
       }
-      setFormData({ title: '', description: '' })
+
+      if (isEditing) {
+        onSubmit({ ...editTask, ...submitData })
+      } else {
+        onSubmit({ ...submitData })
+      }
+      setFormData({ title: '', description: '', dueDate: '' })
     }
   }
 
@@ -52,7 +61,7 @@ const TodoForm = ({
         onCancel()
       }
       if (!isEditing) {
-        setFormData({ title: '', description: '' })
+        setFormData({ title: '', description: '', dueDate: '' })
       }
       setIsClosing(false)
     }, 300)
@@ -62,6 +71,11 @@ const TodoForm = ({
     if (e.target === e.currentTarget) {
       handleCancel()
     }
+  }
+
+  const getTodayDate = () => {
+    const today = new Date()
+    return today.toISOString().split('T')[0]
   }
 
   const modalContent = (
@@ -114,6 +128,26 @@ const TodoForm = ({
                 maxLength={200}
                 style={{ maxHeight: '150px', overflowY: 'auto' }}
               />
+            </div>
+
+            <div className="mb-3">
+              <label htmlFor="dueDate" className="form-label fw-semibold">
+                Due date
+              </label>
+              <Input
+                type="date"
+                id="dueDate"
+                name="dueDate"
+                value={formData.dueDate}
+                onChange={handleChange}
+                disabled={loading}
+                min={getTodayDate()}
+              />
+              <div className="form-text text-muted">
+                <small>
+                  Optional. Choose when this task should be completed.
+                </small>
+              </div>
             </div>
 
             <div className="d-flex justify-content-end gap-2">

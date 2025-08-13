@@ -2,70 +2,86 @@ import React, { useState, useEffect } from 'react'
 import TodoForm from '../components/todo/TodoForm'
 import TodoList from '../components/todo/TodoList'
 import Alert from '../components/common/Alert'
-import {
-  createTask,
-  deleteTask,
-  getTasks,
-  updateTask as updateTaskFunc,
-} from '../api/todoApi'
 import Button from '../components/common/Button'
 import ConfirmModal from '../components/common/ConfirmModal'
+import { useDispatch, useSelector } from 'react-redux'
+import {
+  selectActiveListTasks,
+  selectActiveListTasksError,
+  selectActiveListTasksLoading,
+  selectAllLists,
+  selectListsLoading,
+  selectSelectedListId,
+} from '../redux/selectors'
+import { fetchListsAction } from '../redux/actions/listsAction'
+import {
+  createTaskAction,
+  deleteTaskAction,
+  fetchTasksForListAction,
+  updateTaskAction,
+} from '../redux/actions/tasksAction'
 
 const TodoPage = () => {
-  const [tasks, setTasks] = useState([])
-  const [loading, setLoading] = useState(true)
+  const dispatch = useDispatch()
+
+  const lists = useSelector(selectAllLists)
+  const listsLoading = useSelector(selectListsLoading)
+  const selectedListId = useSelector(selectSelectedListId)
+  const tasks = useSelector(selectActiveListTasks)
+  const tasksLoading = useSelector(selectActiveListTasksLoading)
+  const tasksError = useSelector(selectActiveListTasksError)
+
   const [error, setError] = useState(null)
   const [editingTask, setEditingTask] = useState(null)
   const [showForm, setShowForm] = useState(false)
-
   const [showConfirm, setShowConfirm] = useState(false)
   const [taskToDelete, setTaskToDelete] = useState(null)
 
-  // const [activeTasks, setActiveTasks] = useState(0)
-  // const [completedTasks, setCompleteTasks] = useState(0)
+  useEffect(() => {
+    dispatch(fetchListsAction())
+  }, [dispatch])
 
   useEffect(() => {
-    loadTasks()
-  }, [])
-
-  // useEffect(() => {
-  //   changeStatistics()
-  // }, [tasks])
-
-  // const changeStatistics = () => {
-  //   setActiveTasks(tasks.filter((task) => !task.isCompleted))
-  //   setCompleteTasks(tasks.filter((task) => task.isCompleted))
-  // }
-
-  const loadTasks = async () => {
-    try {
-      setLoading(true)
-      setError(null)
-      const taskList = await getTasks()
-      console.log('taskList ', taskList)
-      setTasks(taskList)
-    } catch (err) {
-      setError('Error loading tasks. Please try again later.')
-      console.error('Error loading tasks:', err)
-    } finally {
-      setLoading(false)
+    if (selectedListId) {
+      dispatch(fetchTasksForListAction(selectedListId))
     }
-  }
+  }, [selectedListId, dispatch])
+
+  useEffect(() => {
+    if (tasksError) {
+      setError(tasksError)
+    }
+  }, [tasksError])
 
   const handleSubmitTask = async (taskData) => {
     try {
-      setLoading(true)
       setError(null)
 
+      if (!selectedListId) {
+        setError('No active list selected')
+        return
+      }
+
       if (editingTask) {
-        const updateTask = await updateTaskFunc(taskData._id, taskData)
-        setTasks((prev) =>
-          prev.map((task) => (task._id === taskData._id ? updateTask : task))
+        await dispatch(
+          updateTaskAction(editingTask.id, {
+            title: taskData.title,
+            description: taskData.description,
+            status: taskData.status,
+            dueDate: taskData.dueDate,
+          })
         )
         setEditingTask(null)
       } else {
-        const newTask = await createTask(taskData)
-        setTasks((prev) => [newTask, ...prev])
+        await dispatch(
+          createTaskAction(
+            taskData.title,
+            selectedListId,
+            taskData.description,
+            taskData.status,
+            taskData.dueDate
+          )
+        )
       }
     } catch (err) {
       setError(
@@ -74,34 +90,24 @@ const TodoPage = () => {
           : 'Error creating task. Please try again.'
       )
       console.error('Error submitting task:', err)
-    } finally {
-      setLoading(false)
     }
   }
 
   const handleToggleTask = async (id, isCompleted) => {
     try {
-      setLoading(true)
       setError(null)
 
-      const currentTask = tasks.find((task) => task._id === id)
+      const currentTask = tasks.find((task) => task.id === id)
       if (!currentTask) {
         throw new Error('Task not found')
       }
 
-      const updatedTask = await updateTaskFunc(id, {
-        ...currentTask,
-        isCompleted,
-      })
+      const status = isCompleted ? 'completed' : 'not_started'
 
-      setTasks((prev) =>
-        prev.map((task) => (task._id === id ? updatedTask : task))
-      )
+      await dispatch(updateTaskAction(id, { status }))
     } catch (err) {
       setError('Error updating task status.')
       console.error('Error toggling task:', err)
-    } finally {
-      setLoading(false)
     }
   }
 
@@ -116,29 +122,27 @@ const TodoPage = () => {
   }
 
   const handleDeleteRequest = (taskId) => {
-    const task = tasks.find((t) => t._id === taskId)
+    const task = tasks.find((t) => t.id === taskId)
     setTaskToDelete(task)
     setShowConfirm(true)
   }
 
   const handleConfirmDelete = async () => {
-    if (!taskToDelete) return
+    if (!taskToDelete || !selectedListId) return
 
     try {
-      setLoading(true)
       setError(null)
-      await deleteTask(taskToDelete._id)
-      setTasks((prev) => prev.filter((task) => task._id !== taskToDelete._id))
+      await dispatch(deleteTaskAction(taskToDelete.id, selectedListId))
 
-      if (editingTask && editingTask._id === taskToDelete._id) {
+      if (editingTask && editingTask.id === taskToDelete.id) {
         setEditingTask(null)
       }
+
+      setShowConfirm(false)
+      setTaskToDelete(null)
     } catch (err) {
       setError('Error deleting task. Please try again.')
       console.error('Error deleting task:', err)
-    } finally {
-      setLoading(false)
-      setTaskToDelete(null)
     }
   }
 
@@ -151,6 +155,39 @@ const TodoPage = () => {
     setError(null)
   }
 
+  if (listsLoading && lists.length === 0) {
+    return (
+      <div className="d-flex justify-content-center align-items-center vh-100">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+        <p className="mt-3 text-muted">Loading lists...</p>
+      </div>
+    )
+  }
+
+  if (!listsLoading && lists.length === 0) {
+    return (
+      <div className="min-vh-100 py-4">
+        <div className="container">
+          <div className="row justify-content-center">
+            <div className="col-12 col-lg-10 col-xl-8">
+              <div className="text-center py-5">
+                <i className="fas fa-list-ul fa-3x text-muted mb-3"></i>
+                <h3 className="text-muted">No lists found</h3>
+                <p className="text-muted">
+                  Create your first list to get started.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  const selectedList = lists.find((list) => list.id === selectedListId)
+
   return (
     <div className="min-vh-100 py-4">
       <div className="container">
@@ -161,7 +198,7 @@ const TodoPage = () => {
                 <div className="todo-header text-center">
                   <h1 className="mb-1">
                     <i className="fas fa-tasks me-3"></i>
-                    TODO List
+                    {selectedList ? selectedList.name : 'TODO List'}
                   </h1>
                   <p className="text-muted mb-0">
                     Organize your tasks efficiently
@@ -186,7 +223,7 @@ const TodoPage = () => {
                   <div className="mb-4">
                     <TodoForm
                       onSubmit={handleSubmitTask}
-                      loading={loading}
+                      loading={tasksLoading}
                       editTask={editingTask}
                       onCancel={() => {
                         handleCancelEdit()
@@ -196,7 +233,7 @@ const TodoPage = () => {
                   </div>
                 )}
 
-                {loading && tasks.length === 0 && (
+                {tasksLoading && tasks.length === 0 && (
                   <div className="text-center py-5">
                     <div className="spinner-border text-primary" role="status">
                       <span className="visually-hidden">Loading...</span>
@@ -205,30 +242,34 @@ const TodoPage = () => {
                   </div>
                 )}
 
-                {!loading || tasks.length > 0 ? (
+                {(!tasksLoading || tasks.length > 0) && selectedListId && (
                   <TodoList
                     tasks={tasks}
                     onToggle={handleToggleTask}
                     onEdit={handleEditTask}
                     onDelete={handleDeleteRequest}
-                    loading={loading}
+                    loading={tasksLoading}
                   />
-                ) : null}
+                )}
               </div>
-              <Button
-                className="rounded-btn"
-                variant="light"
-                onClick={() => {
-                  setShowForm((prev) => !prev)
-                  setEditingTask(null)
-                }}
-              >
-                <i className="fas fa-plus"></i>
-              </Button>
+
+              {selectedListId && (
+                <Button
+                  className="rounded-btn"
+                  variant="light"
+                  onClick={() => {
+                    setShowForm((prev) => !prev)
+                    setEditingTask(null)
+                  }}
+                >
+                  <i className="fas fa-plus"></i>
+                </Button>
+              )}
             </div>
           </div>
         </div>
       </div>
+
       <ConfirmModal
         isOpen={showConfirm}
         title="Delete this task?"
@@ -239,7 +280,7 @@ const TodoPage = () => {
         cancelText="Cancel"
         onConfirm={handleConfirmDelete}
         onCancel={handleCancelDelete}
-        loading={loading}
+        loading={tasksLoading}
       />
     </div>
   )

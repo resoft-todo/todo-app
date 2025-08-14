@@ -97,7 +97,7 @@ async function requestPasswordReset(req, res) {
     } catch (error) {
         
         if(error.message.includes('Invalid credentials')){
-            return res.status(400).json({ message: 'Bad request', error: error.message });
+            return res.status(401).json({ error: error.message });
         }
 
         res.status(500).json({ message: 'Server error', error: error.message });

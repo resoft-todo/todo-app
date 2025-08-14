@@ -169,6 +169,8 @@
  *                   example: "If a user with this email exists, a password reset link has been sent."
  *       400:
  *         description: Invalid input data (e.g., malformed email).
+ *       401:
+ *         description: Invalid credentials.
  *       500:
  *         description: Connection to host refused.
  */

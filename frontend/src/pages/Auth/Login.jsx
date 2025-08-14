@@ -126,6 +126,14 @@ export default function Login() {
                     hasError={touchedPassword && !!passwordError}
                     errorMessage={touchedPassword ? passwordError : ''}
                   />
+
+                  <Link
+                    to="/forgot-password"
+                    className="small mt-2 d-block text-muted"
+                    style={{ textDecoration: 'none' }}
+                  >
+                    Forgot password?
+                  </Link>
                 </div>
 
                 <Button

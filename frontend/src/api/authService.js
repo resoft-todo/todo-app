@@ -137,3 +137,39 @@ export async function logoutGlobal() {
     setStoredUser(null)
   }
 }
+
+export async function forgotPasswordReset(email) {
+  try {
+    await axios.post(
+      `${API_URL}/auth/forgot-password`,
+      { email },
+      {
+        headers: { 'Content-Type': 'application/json' },
+      }
+    )
+    return true
+  } catch (err) {
+    console.error('Send link to email failed:', err)
+    if (err.status === 400 || err.status === 401 || err.status === 409)
+      throw new Error(`An account with this email doesn't exists.`)
+    else throw new Error('Server error. Please try again later.')
+  }
+}
+
+export async function setNewResetPassword(token, password) {
+  try {
+    await axios.patch(
+      `${API_URL}/auth/reset-password/${token}`,
+      { password },
+      {
+        headers: { 'Content-Type': 'application/json' },
+      }
+    )
+    return true
+  } catch (err) {
+    console.error('Set new password failed:', err)
+    if (err.status === 400 || err.status === 401 || err.status === 409)
+      throw new Error(`The link is expired.`)
+    else throw new Error('Server error. Please try again later.')
+  }
+}

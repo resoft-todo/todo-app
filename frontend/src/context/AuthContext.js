@@ -17,6 +17,13 @@ import { useNavigate } from 'react-router-dom'
 const AuthContext = createContext(null)
 let fetchUserPromise = null
 
+// const PUBLIC_PATHS = [
+//   '/login',
+//   '/register',
+//   '/forgot-password',
+//   '/reset-password/',
+// ]
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -35,6 +42,7 @@ export const AuthProvider = ({ children }) => {
       } catch (error) {
         console.error('User is not authenticated', error)
         setUser(null)
+        await logoutGlobal()
       } finally {
         fetchUserPromise = null
         setLoading(false)
@@ -44,11 +52,20 @@ export const AuthProvider = ({ children }) => {
     return fetchUserPromise
   }, [])
 
-  useEffect(() => {
-    fetchUser()
-  }, [fetchUser])
+  // useEffect(() => {
+  //   fetchUser()
+  // }, [fetchUser])
 
   useEffect(() => {
+    // const isPublicPath = PUBLIC_PATHS.some((path) =>
+    //   location.pathname.startsWith(path)
+    // )
+    //
+    // if (isPublicPath) {
+    //   setLoading(false)
+    //   return
+    // }
+
     const token = getAccessToken()
     if (token) {
       fetchUser()

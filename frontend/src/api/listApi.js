@@ -34,7 +34,7 @@ export const getListById = async (id) => {
 
 export const updateListName = async (listId, name) => {
   try {
-    const response = await axiosInstance.patch(`/lists/${listId}`, name)
+    const response = await axiosInstance.patch(`/lists/${listId}`, { name })
     return response.data
   } catch (err) {
     console.error(`Failed to update listName ${listId} to ${name}: `, err)

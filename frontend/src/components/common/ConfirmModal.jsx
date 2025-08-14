@@ -25,8 +25,11 @@ const ConfirmModal = ({
   }
 
   const handleConfirm = () => {
-    onConfirm()
-    handleClose()
+    setIsClosing(true)
+    setTimeout(() => {
+      onConfirm()
+      setIsClosing(false)
+    }, 300)
   }
 
   const handleBackdropClick = (e) => {

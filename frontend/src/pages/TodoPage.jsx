@@ -150,7 +150,7 @@ const TodoPage = () => {
 
   if (!selectedListId) {
     return (
-      <div className="d-flex align-items-center justify-content-center h-100">
+      <div className="d-flex align-items-center justify-content-center vh-100">
         <div className="text-center">
           <i className="fas fa-list-ul fa-4x text-muted mb-4"></i>
           <h3 className="text-muted mb-3">No List Selected</h3>

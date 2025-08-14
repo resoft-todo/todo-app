@@ -5,7 +5,8 @@
 :root {
   --primary-color: #{$primary-color};
   --primary-dark: #{$primary-dark};
-  --secondary-color: #{$secondary-color};
+  //--secondary-color: #{$secondary-color};
+  --secondary-color: #{$primary-color};
   --success-color: #{$success-color};
   --success-dark: #{$success-dark};
   --danger-color: #{$danger-color};
@@ -81,6 +82,23 @@ fieldset:disabled .btn {
     background-color: transparent;
   }
 }
+
+.btn-secondary {
+  background-color: $primary-color;
+  border-color: $primary-color;
+  color: #000;
+
+  &:hover {
+    background-color: darken($primary-color, 10%);
+    border-color: darken($primary-color, 10%);
+  }
+
+  &:focus,
+  &.focus {
+    box-shadow: 0 0 0 0.2rem rgba(144, 238, 144, 0.5);
+  }
+}
+
 
 .form-check-input {
   border: 1px solid $primary-dark;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import {
   selectAllLists,
@@ -9,10 +9,12 @@ import {
   createListAction,
   deleteListAction,
   selectList,
+  updateListNameAction,
 } from '../../redux/actions/listsAction'
 import Button from '../../components/common/Button'
 import Input from '../../components/common/Input'
 import styles from './styles.module.scss'
+import ConfirmModal from '../../components/common/ConfirmModal'
 
 export default function Sidebar({
   isMobileOpen,
@@ -24,16 +26,68 @@ export default function Sidebar({
 
   const [showCreateForm, setShowCreateForm] = useState(false)
   const [newListName, setNewListName] = useState('')
+  const [showConfirm, setShowConfirm] = useState(false)
 
   const lists = useSelector(selectAllLists)
   const listsLoading = useSelector(selectListsLoading)
   const selectedListId = useSelector(selectSelectedListId)
+  const [listIdToDelete, setListIdToDelete] = useState(null)
+
+  const [loading, setLoading] = useState(false)
+  const [menuOpenId, setMenuOpenId] = useState(null)
+  const [editListId, setEditListId] = useState(null)
+  const [editListName, setEditListName] = useState('')
 
   const handleSelectList = (listId) => {
+    if (editListId === listId) return
+
     dispatch(selectList(listId))
     if (onDidSelect) {
       onDidSelect()
     }
+  }
+
+  useEffect(() => {
+    const handleClickOutside = () => {
+      setMenuOpenId(null)
+    }
+    if (menuOpenId !== null) {
+      document.addEventListener('click', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside)
+    }
+  }, [menuOpenId])
+
+  const handleEditList = (list, e) => {
+    e.stopPropagation()
+    setEditListId(list.id)
+    setEditListName(list.name)
+    setShowCreateForm(false)
+    setMenuOpenId(null)
+  }
+
+  const cancelEdit = () => {
+    setEditListId(null)
+    setEditListName('')
+  }
+
+  const handleUpdateList = async (e) => {
+    e.preventDefault()
+    if (!editListName.trim()) return
+    try {
+      await dispatch(updateListNameAction(editListId, editListName.trim()))
+      setEditListId(null)
+      setEditListName('')
+    } catch (error) {
+      console.error('Error updating list:', error)
+    }
+  }
+
+  const toggleMenu = (listId, e) => {
+    e.stopPropagation()
+    setMenuOpenId(menuOpenId === listId ? null : listId)
   }
 
   const handleCreateList = async (e) => {
@@ -48,13 +102,31 @@ export default function Sidebar({
     }
   }
 
-  const handleDeleteList = async (listId, e) => {
+  const cancelCreate = () => {
+    setShowCreateForm(false)
+    setNewListName('')
+  }
+
+  const handleCancelDelete = () => {
+    setShowConfirm(false)
+  }
+
+  const handleOpenDelete = (listId, e) => {
     e.stopPropagation()
-    // Cofirm modal....
+    setListIdToDelete(listId)
+    setShowConfirm(true)
+  }
+
+  const handleConfirmDelete = async () => {
+    setLoading(true)
     try {
-      await dispatch(deleteListAction(listId))
+      await dispatch(deleteListAction(listIdToDelete))
+      setShowConfirm(false)
+      setListIdToDelete(null)
     } catch (error) {
       console.error('Error deleting list:', error)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -89,33 +161,79 @@ export default function Sidebar({
           </div>
         ) : (
           <>
-            {lists.map((list) => (
-              <div
-                key={list.id}
-                className={`${styles.listItem} ${selectedListId === list.id ? 'selected' : ''}`}
-                onClick={() => handleSelectList(list.id)}
-              >
-                <div className="d-flex align-items-center flex-grow-1">
-                  <i className="fas fa-folder me-2"></i>
+            {lists.map((list) =>
+              editListId === list.id ? (
+                <form
+                  key={`edit-${list.id}`}
+                  onSubmit={handleUpdateList}
+                  className="mb-1"
+                >
+                  <div className="input-group input-group-sm">
+                    <Input
+                      type="text"
+                      value={editListName}
+                      onChange={(e) => setEditListName(e.target.value)}
+                      autoFocus
+                    />
+                    <Button
+                      type="submit"
+                      variant="primary"
+                      size="sm"
+                      disabled={!editListName.trim()}
+                    >
+                      <i className="fas fa-check"></i>
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      size="sm"
+                      onClick={cancelEdit}
+                    >
+                      <i className="fas fa-times"></i>
+                    </Button>
+                  </div>
+                </form>
+              ) : (
+                <div
+                  key={list.id}
+                  className={`${styles.listItem} ${selectedListId === list.id ? 'selected' : ''}`}
+                  onClick={() => handleSelectList(list.id)}
+                >
+                  <div className="d-flex align-items-center flex-grow-1">
+                    <i className="fas fa-folder me-2"></i>
+                    {!isCollapsed && (
+                      <span className="text-truncate" title={list.name}>
+                        {list.name}
+                      </span>
+                    )}
+                  </div>
                   {!isCollapsed && (
-                    <span className="text-truncate" title={list.name}>
-                      {list.name}
-                    </span>
+                    <div className="position-relative">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="p-1 ms-1"
+                        onClick={(e) => toggleMenu(list.id, e)}
+                        title="Options"
+                      >
+                        <i className="fas fa-ellipsis-v"></i>
+                      </Button>
+
+                      {menuOpenId === list.id && (
+                        <div className={styles.contextMenu}>
+                          <div onClick={(e) => handleEditList(list, e)}>
+                            Edit
+                          </div>
+                          <div onClick={(e) => handleOpenDelete(list.id, e)}>
+                            Delete
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   )}
                 </div>
-                {!isCollapsed && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="p-1 ms-1"
-                    onClick={(e) => handleDeleteList(list.id, e)}
-                    title="Delete list"
-                  >
-                    <i className="fas fa-trash text-danger"></i>
-                  </Button>
-                )}
-              </div>
-            ))}
+              )
+            )}
 
             {!listsLoading && lists.length === 0 && !isCollapsed && (
               <div className="text-center py-4">
@@ -154,10 +272,7 @@ export default function Sidebar({
                 type="button"
                 variant="secondary"
                 size="sm"
-                onClick={() => {
-                  setShowCreateForm(false)
-                  setNewListName('')
-                }}
+                onClick={cancelCreate}
                 title="Cancel"
               >
                 <i className="fas fa-times"></i>
@@ -169,8 +284,11 @@ export default function Sidebar({
             variant="primary"
             size="sm"
             className="w-100"
-            onClick={() => setShowCreateForm(true)}
+            onClick={() => {
+              setShowCreateForm(true)
+            }}
             title={isCollapsed ? 'Create new list' : undefined}
+            disabled={editListId !== null}
           >
             <i className={`fas fa-plus ${!isCollapsed ? 'me-2' : ''}`}></i>
             {!isCollapsed && (
@@ -179,6 +297,19 @@ export default function Sidebar({
           </Button>
         )}
       </div>
+
+      <ConfirmModal
+        isOpen={showConfirm}
+        title="Delete this list?"
+        message={
+          'Are you sure you want to delete this list? This action cannot be undone.'
+        }
+        confirmText="Delete"
+        cancelText="Cancel"
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+        loading={loading}
+      />
     </div>
   )
 }

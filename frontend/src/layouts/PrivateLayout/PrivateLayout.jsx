@@ -97,7 +97,7 @@ export default function PrivateLayout() {
           {selectedListId || lists.length > 0 ? (
             <Outlet />
           ) : (
-            <div className="d-flex align-items-center justify-content-center h-100">
+            <div className="d-flex align-items-center justify-content-center align-self-center vh-100">
               <div className="text-center">
                 <i className="fas fa-folder-plus fa-3x text-muted mb-3"></i>
                 <h4 className="text-muted">Create your first list</h4>

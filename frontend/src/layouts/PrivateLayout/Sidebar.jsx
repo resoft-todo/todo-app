@@ -174,6 +174,7 @@ export default function Sidebar({
                       value={editListName}
                       onChange={(e) => setEditListName(e.target.value)}
                       autoFocus
+                      maxLength={50}
                     />
                     <Button
                       type="submit"
@@ -199,10 +200,10 @@ export default function Sidebar({
                   className={`${styles.listItem} ${selectedListId === list.id ? 'selected' : ''}`}
                   onClick={() => handleSelectList(list.id)}
                 >
-                  <div className="d-flex align-items-center flex-grow-1">
+                  <div className={styles.listNameContainer}>
                     <i className="fas fa-folder me-2"></i>
                     {!isCollapsed && (
-                      <span className="text-truncate" title={list.name}>
+                      <span className={styles.listNameText} title={list.name}>
                         {list.name}
                       </span>
                     )}
@@ -258,6 +259,7 @@ export default function Sidebar({
                 onChange={(e) => setNewListName(e.target.value)}
                 className="form-control"
                 autoFocus
+                maxLength={50}
               />
               <Button
                 type="submit"

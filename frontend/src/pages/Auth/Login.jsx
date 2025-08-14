@@ -3,9 +3,10 @@ import { login } from '../../api/authService'
 import React from 'react'
 import Input from '../../components/common/Input'
 import Button from '../../components/common/Button'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 export default function Login() {
+  const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -57,7 +58,7 @@ export default function Login() {
       const response = await login(email, password)
 
       if (response && response.user) {
-        window.alert('Logged in successfully!', response.user.name)
+        navigate('/')
         setEmail('')
         setTouchedEmail(false)
         setPassword('')

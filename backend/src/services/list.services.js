@@ -15,11 +15,11 @@ const savelistSelect = {
  * 
  */
 async function createList(name, userId, groupId) {
-    try {
+    
         if (!name) {
             throw new Error('List name is required');
         }
-
+    try {
         const newList = await prisma.list.create({
             data: {
                 name,
@@ -82,7 +82,7 @@ async function getListById(listId, userId) {
  * @returns {Promise<Object|null>}
  */
 async function updateListName(listId, name, userId) {
-    try {
+    
 
         if (!name) {
             throw new Error('List name is required');
@@ -95,7 +95,7 @@ async function updateListName(listId, name, userId) {
         if (!existingList) {
             throw new Error('List not found or does not belong to the user');
         }
-
+    try {
         const updatedList = await prisma.list.update({
             where: { id: listId },
             data: { name },
@@ -115,7 +115,7 @@ async function updateListName(listId, name, userId) {
  * @returns {Promise<Object|null>}
  */
 async function addToGroup(listId, groupId, userId) {
-    try {
+    
         const existingList = await prisma.list.findUnique({
             where: {
                 id: listId,
@@ -138,6 +138,7 @@ async function addToGroup(listId, groupId, userId) {
             throw new Error('Group not found or does not belong to the user');
         }
 
+    try {
         const updatedList = await prisma.list.update({
             where: { id: listId },
             data: { groupId },
@@ -157,7 +158,7 @@ async function addToGroup(listId, groupId, userId) {
  */
 
 async function removeFromGroup(listId, userId){
-    try{
+    
         const existingList = await prisma.list.findUnique({
             where: {
                 id: listId,
@@ -168,7 +169,7 @@ async function removeFromGroup(listId, userId){
         if(!existingList) {
             throw new Error('List not found')
         }
-        
+    try{
         const updateList = await prisma.list.update({
             where: { id: listId },
             data: { groupId: null },
@@ -188,7 +189,7 @@ async function removeFromGroup(listId, userId){
  * @returns {Promise<Object|null>}
  */
 async function deleteList(listId, userId) {
-    try {
+    
         const existingList = await prisma.list.findUnique({
             where: {
                 id: listId,
@@ -199,7 +200,7 @@ async function deleteList(listId, userId) {
         if (!existingList) {
             throw new Error('List not found or does not belong to the user');
         }
-
+    try {
         const deletedList = await prisma.list.delete({
             where: { id: listId },
             select: savelistSelect,

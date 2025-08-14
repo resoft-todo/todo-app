@@ -14,11 +14,11 @@ const groupSelect = {
  * @returns {Promise<Object|null>} 
  */
 async function createGroup({ name, userId }) {
-    try {
+    
         if(!name){
             throw new Error('Group name is required');
         }
-
+    try {
         const newGroup = await prisma.group.create({
             data: {
                 name,
@@ -81,7 +81,7 @@ async function getGroupById(groupId, userId) {
  * @returns {Promise<Object|null>}
  */
 async function updateGroupName(groupId, name, userId) {
-    try {
+    
         if (!name) {
             throw new Error('Group name is required');
         }
@@ -96,7 +96,7 @@ async function updateGroupName(groupId, name, userId) {
         if (!existingGroup) {
             throw new Error('Group not found or does not belong to the user');
         }
-
+    try {
         const updatedGroup = await prisma.group.update({
             where: { id: groupId },
             data: { name },
@@ -116,7 +116,7 @@ async function updateGroupName(groupId, name, userId) {
  */
 
 async function deleteGroup(groupId, userId) {
-    try {
+    
         const existingGroup = await prisma.group.findUnique({
             where: {
                 id: groupId,
@@ -127,7 +127,7 @@ async function deleteGroup(groupId, userId) {
         if (!existingGroup) {
             throw new Error('Group not found or does not belong to the user');
         }
-        
+    try {   
         const deletedGroup = await prisma.group.delete({
             where: { id: groupId },
             select: groupSelect,

@@ -1,0 +1,21 @@
+.profileRow {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 1rem;
+  min-width: 0;
+}
+
+.profileLabel {
+  font-weight: 600;
+  color: #adb5bd;
+  margin-right: 0.5rem;
+  white-space: nowrap;
+}
+
+.profileValue {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/*# sourceMappingURL=styles.module.css.map */

@@ -1,4 +1,5 @@
 import axios from 'axios'
+import axiosInstance from './axiosInstance'
 
 const API_URL = 'http://localhost:8000/api'
 
@@ -67,7 +68,6 @@ export async function refreshAccessToken() {
 
     if (err.response?.status === 401 || err.response?.status === 403) {
       console.log('Refresh token expired or invalid, user needs to re-login')
-      // Очищуємо токени
       setAccessToken(null)
       setStoredUser(null)
       return null
@@ -85,6 +85,7 @@ export async function login(email, password) {
       { email, password },
       {
         headers: { 'Content-Type': 'application/json' },
+        withCredentials: true,
       }
     )
 
@@ -122,9 +123,13 @@ export async function register(name, email, password, confirmPassword) {
   }
 }
 
-export async function logout() {
+export async function logoutGlobal() {
   try {
-    await axios.post(`${API_URL}/auth/logout`, {}, { withCredentials: true })
+    await axiosInstance.post(
+      `${API_URL}/auth/logout`,
+      {},
+      { withCredentials: true }
+    )
   } catch (err) {
     console.warn('Logout request failed (ignore):', err)
   } finally {

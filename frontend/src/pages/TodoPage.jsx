@@ -173,7 +173,7 @@ const TodoPage = () => {
           <div className="col-12 col-lg-10 col-xl-8">
             <div className="todo-container">
               <div className="d-flex flex-md-row justify-content-center align-items-start mb-4 gap-3">
-                <div className="todo-header text-center">
+                <div className="todo-header text-center min-w-0 text-break">
                   <h1 className="mb-1">
                     <i className="fas fa-tasks me-3"></i>
                     {selectedList ? selectedList.name : 'TODO List'}

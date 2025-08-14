@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { getAccessToken, refreshAccessToken, logout } from './authService'
+import { getAccessToken, refreshAccessToken, logoutGlobal } from './authService'
 
 const axiosInstance = axios.create({
   baseURL: 'http://localhost:8000/api',
@@ -44,7 +44,7 @@ axiosInstance.interceptors.response.use(
     try {
       const newAccessToken = await refreshAccessToken()
       if (!newAccessToken) {
-        await logout()
+        await logoutGlobal()
         window.location.href = '/login'
         return Promise.reject(error)
       }
@@ -56,7 +56,7 @@ axiosInstance.interceptors.response.use(
       window.location.reload()
       return
     } catch (err) {
-      await logout()
+      await logoutGlobal()
       window.location.href = '/login'
       return Promise.reject(err)
     }

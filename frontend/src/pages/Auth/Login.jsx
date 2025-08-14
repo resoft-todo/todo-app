@@ -4,6 +4,7 @@ import React from 'react'
 import Input from '../../components/common/Input'
 import Button from '../../components/common/Button'
 import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../../context/AuthContext'
 
 export default function Login() {
   const navigate = useNavigate()
@@ -11,6 +12,8 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+
+  const { refetchUser } = useAuth()
 
   const [touchedEmail, setTouchedEmail] = useState(false)
   const [touchedPassword, setTouchedPassword] = useState(false)
@@ -58,6 +61,7 @@ export default function Login() {
       const response = await login(email, password)
 
       if (response && response.user) {
+        await refetchUser()
         navigate('/')
         setEmail('')
         setTouchedEmail(false)

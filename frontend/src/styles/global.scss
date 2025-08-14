@@ -99,6 +99,34 @@ fieldset:disabled .btn {
   }
 }
 
+.btn-outline-secondary {
+  color: $primary-color;
+  border-color: $primary-color;
+  background-color: transparent;
+
+  &:hover {
+    background-color: $primary-color;
+    border-color: $primary-color;
+    color: #000;
+  }
+
+  &:focus,
+  &.focus,
+  &:active,
+  &.active {
+    background-color: $primary-color !important;
+    border-color: $primary-color !important;
+    color: #000 !important;
+    box-shadow: 0 0 0 0.2rem rgba(144, 238, 144, 0.5) !important;
+  }
+
+  &:disabled,
+  &.disabled {
+    color: $gray-500;
+    border-color: $gray-300;
+    background-color: transparent;
+  }
+}
 
 .form-check-input {
   border: 1px solid $primary-dark;
@@ -119,10 +147,12 @@ s,
 .btn-primary {
   background-color: $primary-dark;
   border-color: $primary-dark;
+  color: white;
 
   &:hover {
     background-color: darken($primary-dark, 10%);
     border-color: darken($primary-dark, 10%);
+    color: white;
   }
 
   &:focus,

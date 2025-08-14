@@ -15,6 +15,8 @@ import Button from '../../components/common/Button'
 import Input from '../../components/common/Input'
 import styles from './styles.module.scss'
 import ConfirmModal from '../../components/common/ConfirmModal'
+import { useAuth } from '../../context/AuthContext'
+import ProfileModal from '../../components/todo/ProfileModal/ProfileModal'
 
 export default function Sidebar({
   isMobileOpen,
@@ -23,6 +25,8 @@ export default function Sidebar({
   onDidSelect,
 }) {
   const dispatch = useDispatch()
+  const { user, loading: userLoading } = useAuth()
+  const [isProfileModalOpen, setProfileModalOpen] = useState(false)
 
   const [showCreateForm, setShowCreateForm] = useState(false)
   const [newListName, setNewListName] = useState('')
@@ -145,6 +149,29 @@ export default function Sidebar({
             <i className="fas fa-list me-2"></i>
             {!isCollapsed && 'Lists'}
           </h5>
+
+          {!isCollapsed && (
+            <div className="ms-2">
+              {userLoading ? (
+                <span
+                  className="spinner-border spinner-border-sm"
+                  aria-hidden="true"
+                />
+              ) : (
+                user && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="p-1"
+                    onClick={() => setProfileModalOpen(true)}
+                    title="My Profile"
+                  >
+                    <i className="fas fa-user-circle fa-lg"></i>
+                  </Button>
+                )
+              )}
+            </div>
+          )}
         </div>
       </div>
 
@@ -311,6 +338,11 @@ export default function Sidebar({
         onConfirm={handleConfirmDelete}
         onCancel={handleCancelDelete}
         loading={loading}
+      />
+
+      <ProfileModal
+        isOpen={isProfileModalOpen}
+        onClose={() => setProfileModalOpen(false)}
       />
     </div>
   )

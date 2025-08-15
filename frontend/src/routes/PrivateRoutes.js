@@ -1,5 +1,6 @@
 import React from 'react'
 import TodoPage from '../pages/TodoPage'
+import { Navigate } from 'react-router-dom'
 
 export const privateRoutes = [
   {
@@ -17,5 +18,9 @@ export const privateRoutes = [
   {
     path: '/lists/:listId',
     element: <TodoPage />,
+  },
+  {
+    path: '*',
+    element: <Navigate to="/" replace />,
   },
 ]

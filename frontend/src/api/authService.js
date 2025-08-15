@@ -11,15 +11,6 @@ export function getAccessToken() {
   return localStorage.getItem(ACCESS_TOKEN_KEY)
 }
 
-export function getRefreshToken() {
-  const value = `; ${document.cookie}`
-  const parts = value.split(`; ${REFRESH_TOKEN_KEY}=`)
-  if (parts.length === 2) {
-    return parts.pop().split(';').shift()
-  }
-  return null
-}
-
 export function setAccessToken(token) {
   if (token) {
     localStorage.setItem(ACCESS_TOKEN_KEY, token)
@@ -42,8 +33,6 @@ export function setStoredUser(userObj) {
 }
 
 export async function refreshAccessToken() {
-  console.log('🔄 Starting token refresh...')
-
   try {
     const res = await axios.post(
       `${API_URL}/auth/refresh`,
@@ -66,24 +55,29 @@ export async function refreshAccessToken() {
       console.error('Refresh response does not contain accessToken')
       return null
     }
-    console.log('Token refreshed successfully')
+    //console.log('Token refreshed successfully')
     setAccessToken(newAccess)
     return newAccess
   } catch (err) {
-    console.error(
-      'Error while refreshing token:',
-      err?.response?.status,
-      err?.message
-    )
+    const status = err.response?.status
+    if (status !== 401 && status !== 403)
+      console.error(
+        'Error while refreshing token:',
+        err?.response?.status,
+        err?.message
+      )
 
-    if (err.response?.status === 401 || err.response?.status === 403) {
+    if (status === 401 || status === 403) {
       console.log('Refresh token expired or invalid, user needs to re-login')
       setAccessToken(null)
       setStoredUser(null)
       return null
     }
 
-    console.log('Network or server error during refresh')
+    if (!status) {
+      console.log('Network or server error during refresh')
+    }
+
     return null
   }
 }

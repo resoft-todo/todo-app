@@ -7,6 +7,7 @@ import { fetchListsAction } from '../../redux/actions/listsAction'
 import Button from '../../components/common/Button'
 import styles from './styles.module.scss'
 import Sidebar from './Sidebar'
+import { useMediaQuery } from '../../hooks/useMediaQuery'
 
 export default function PrivateLayout() {
   const [isAuthenticated, setIsAuthenticated] = useState(null)
@@ -51,6 +52,17 @@ export default function PrivateLayout() {
   const closeMobileSidebar = () => {
     setIsMobileSidebarOpen(false)
   }
+
+  const isMobile = useMediaQuery('(max-width: 768px)')
+
+  useEffect(() => {
+    if (isMobile) {
+      setSidebarCollapsed(false)
+    }
+    if (!isMobile) {
+      setIsMobileSidebarOpen(false)
+    }
+  }, [isMobile])
 
   if (isLoading) {
     return (

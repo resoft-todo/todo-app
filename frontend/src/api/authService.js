@@ -5,7 +5,6 @@ const API_URL = 'http://localhost:8000/api'
 
 const ACCESS_TOKEN_KEY = 'accessToken'
 const USER_KEY = 'user'
-const REFRESH_TOKEN_KEY = 'refreshToken'
 
 export function getAccessToken() {
   return localStorage.getItem(ACCESS_TOKEN_KEY)

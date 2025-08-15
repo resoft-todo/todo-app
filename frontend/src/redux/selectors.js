@@ -1,4 +1,6 @@
 // Selectors for lists
+import { createSelector } from 'reselect'
+
 export const selectAllLists = (state) => state.lists.items
 export const selectListsLoading = (state) => state.lists.loading
 export const selectListsError = (state) => state.lists.error
@@ -21,10 +23,13 @@ export const selectTasksErrorForList = (listId) => (state) =>
   state.tasks.error[listId] || null
 
 // Selectors for active list
-export const selectActiveListTasks = (state) => {
-  const selectedListId = selectSelectedListId(state)
-  return selectedListId ? selectTasksByListId(selectedListId)(state) : []
-}
+export const selectActiveListTasks = createSelector(
+  [selectSelectedListId, (state) => state.tasks.byListId],
+  (selectedListId, byListId) => {
+    if (!selectedListId) return []
+    return byListId[selectedListId] || []
+  }
+)
 
 export const selectActiveListTasksLoading = (state) => {
   const selectedListId = selectSelectedListId(state)

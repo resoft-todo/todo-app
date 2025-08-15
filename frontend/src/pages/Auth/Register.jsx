@@ -4,13 +4,14 @@ import React from 'react'
 import Input from '../../components/common/Input'
 import Button from '../../components/common/Button'
 import { Link } from 'react-router-dom'
+import { toast } from 'react-toastify'
 
 export default function Register() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-  const [error, setError] = useState('')
+  //const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
   const [touched, setTouched] = useState({
@@ -66,7 +67,7 @@ export default function Register() {
 
   const handleChange = (setter) => (e) => {
     setter(e.target.value)
-    if (error) setError('')
+    //if (error) setError('')
   }
 
   const handleBlur = (field) => {
@@ -86,7 +87,7 @@ export default function Register() {
       return
     }
     setLoading(true)
-    setError('')
+    //setError('')
 
     try {
       await register(name, email, password, confirmPassword)
@@ -102,7 +103,8 @@ export default function Register() {
         confirmPassword: false,
       })
     } catch (error) {
-      setError(error.message || 'Registration failed')
+      toast.error(error.message || 'Registration failed')
+      //setError(error.message || 'Registration failed')
     } finally {
       setLoading(false)
     }
@@ -115,11 +117,11 @@ export default function Register() {
           <div className="card shadow-sm">
             <div className="card-body">
               <h3 className="text-center mb-2">Register</h3>
-              {error && (
-                <div className="mb-1 text-center">
-                  <span className="red">{error}</span>
-                </div>
-              )}
+              {/*{error && (*/}
+              {/*  <div className="mb-1 text-center">*/}
+              {/*    <span className="red">{error}</span>*/}
+              {/*  </div>*/}
+              {/*)}*/}
 
               <form onSubmit={handleRegister}>
                 <div className="form-group mb-3">

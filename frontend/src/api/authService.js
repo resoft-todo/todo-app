@@ -5,9 +5,19 @@ const API_URL = 'http://localhost:8000/api'
 
 const ACCESS_TOKEN_KEY = 'accessToken'
 const USER_KEY = 'user'
+const REFRESH_TOKEN_KEY = 'refreshToken'
 
 export function getAccessToken() {
   return localStorage.getItem(ACCESS_TOKEN_KEY)
+}
+
+export function getRefreshToken() {
+  const value = `; ${document.cookie}`
+  const parts = value.split(`; ${REFRESH_TOKEN_KEY}=`)
+  if (parts.length === 2) {
+    return parts.pop().split(';').shift()
+  }
+  return null
 }
 
 export function setAccessToken(token) {

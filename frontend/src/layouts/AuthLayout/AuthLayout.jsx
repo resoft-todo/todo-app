@@ -10,6 +10,12 @@ export default function AuthLayout() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
+        // const refreshToken = getRefreshToken()
+        // console.log('refersh token', refreshToken)
+        // if (refreshToken === null) {
+        //   setIsAuthenticated(false)
+        //   return
+        // }
         let token = getAccessToken()
 
         if (!token) {

@@ -51,6 +51,7 @@ export const fetchListsAction = () => async (dispatch) => {
     }
   } catch (err) {
     dispatch(fetchListsFailure(err.message))
+    throw err
   }
 }
 
@@ -60,6 +61,7 @@ export const createListAction = (name, groupId) => async (dispatch) => {
     dispatch(createListSuccess(newList))
   } catch (err) {
     console.error(err)
+    throw err
   }
 }
 
@@ -69,6 +71,7 @@ export const updateListNameAction = (listId, name) => async (dispatch) => {
     dispatch(updateListSuccess(updated))
   } catch (err) {
     console.error(err)
+    throw err
   }
 }
 
@@ -78,5 +81,6 @@ export const deleteListAction = (listId) => async (dispatch) => {
     dispatch(deleteListSuccess(listId))
   } catch (err) {
     console.error(err)
+    throw err
   }
 }

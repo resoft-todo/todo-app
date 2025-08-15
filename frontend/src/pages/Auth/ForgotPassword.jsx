@@ -54,7 +54,7 @@ export default function ForgotPassword() {
       <div className="row justify-content-center">
         <div className="col-md-6 col-lg-4">
           <div className="card shadow-sm">
-            <div className="card-body p-5 pt-3 pb-3">
+            <div className="card-body">
               {isSubmitted ? (
                 <div className="text-center">
                   <i className="fas fa-check-circle fa-3x text-success mb-3"></i>

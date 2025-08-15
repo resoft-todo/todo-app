@@ -17,6 +17,7 @@ import styles from './styles.module.scss'
 import ConfirmModal from '../../components/common/ConfirmModal'
 import { useAuth } from '../../context/AuthContext'
 import ProfileModal from '../../components/todo/ProfileModal/ProfileModal'
+import { toast } from 'react-toastify'
 
 export default function Sidebar({
   isMobileOpen,
@@ -43,11 +44,16 @@ export default function Sidebar({
   const [editListName, setEditListName] = useState('')
 
   const handleSelectList = (listId) => {
-    if (editListId === listId) return
+    try {
+      if (editListId === listId) return
 
-    dispatch(selectList(listId))
-    if (onDidSelect) {
-      onDidSelect()
+      dispatch(selectList(listId))
+      if (onDidSelect) {
+        onDidSelect()
+      }
+    } catch (error) {
+      toast.error('Error selecting list. Please try again.')
+      console.error('Error selecting list' + error)
     }
   }
 
@@ -85,6 +91,7 @@ export default function Sidebar({
       setEditListId(null)
       setEditListName('')
     } catch (error) {
+      toast.error('Error updating list. Please try again.')
       console.error('Error updating list:', error)
     }
   }
@@ -102,6 +109,7 @@ export default function Sidebar({
       setNewListName('')
       setShowCreateForm(false)
     } catch (error) {
+      toast.error('Error creating list. Please try again.')
       console.error('Error creating list:', error)
     }
   }
@@ -128,6 +136,7 @@ export default function Sidebar({
       setShowConfirm(false)
       setListIdToDelete(null)
     } catch (error) {
+      toast.error('Error deleting list. Please try again.')
       console.error('Error deleting list:', error)
     } finally {
       setLoading(false)
@@ -320,9 +329,7 @@ export default function Sidebar({
             disabled={editListId !== null}
           >
             <i className={`fas fa-plus ${!isCollapsed ? 'me-2' : ''}`}></i>
-            {!isCollapsed && (
-              <span className={styles.listItemText}>New List</span>
-            )}
+            {!isCollapsed && <span>New List</span>}
           </Button>
         )}
       </div>

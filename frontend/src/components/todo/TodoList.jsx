@@ -12,7 +12,7 @@ const TodoList = ({ tasks, onToggle, onEdit, onDelete, loading = false }) => {
   }
   if (tasks.length === 0) {
     return (
-      <div className="text-center py-5 fade-in">
+      <div className="text-center py-5">
         <div className="mb-4">
           <i className="fas fa-clipboard-list text-muted"></i>
         </div>

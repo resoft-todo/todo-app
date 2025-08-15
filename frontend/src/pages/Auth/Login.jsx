@@ -5,6 +5,7 @@ import Input from '../../components/common/Input'
 import Button from '../../components/common/Button'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
+import { toast } from 'react-toastify'
 
 export default function Login() {
   const navigate = useNavigate()
@@ -68,10 +69,12 @@ export default function Login() {
         setPassword('')
         setTouchedPassword(false)
       } else {
-        setError('Unexpected response from server')
+        toast.error('Unexpected response from server')
+        //setError('Unexpected response from server')
       }
     } catch (err) {
-      setError(err.message || 'Login failed')
+      toast.error(err.message || 'Login failed')
+      //setError(err.message || 'Login failed')
     } finally {
       setLoading(false)
     }
@@ -84,15 +87,15 @@ export default function Login() {
           <div className="card shadow-sm">
             <div className="card-body">
               <h3 className="text-center mb-2">Login</h3>
-              {error && (
-                <div className=" mb-1 text-center">
-                  <span className="red">{error}</span>
-                </div>
-              )}
+              {/*{error && (*/}
+              {/*  <div className=" mb-1 text-center">*/}
+              {/*    <span className="red">{error}</span>*/}
+              {/*  </div>*/}
+              {/*)}*/}
               <form onSubmit={handleLogin}>
                 <div className="form-group mb-3">
                   <label htmlFor="email" className="mb-1">
-                    Email{' '}
+                    Email
                   </label>
                   <Input
                     type="email"

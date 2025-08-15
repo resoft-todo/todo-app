@@ -4,6 +4,7 @@ import Modal from '../../common/Modal'
 import Button from '../../common/Button'
 import Input from '../../common/Input'
 import styles from './styles.module.scss'
+import { toast } from 'react-toastify'
 
 const ProfileModal = ({ isOpen, onClose }) => {
   const { user, logout, updateUser, loading: userLoading } = useAuth()
@@ -43,6 +44,7 @@ const ProfileModal = ({ isOpen, onClose }) => {
       setIsEditingName(false)
       //onClose()
     } catch (error) {
+      toast.error('Failed to update profile. Please try again.')
       console.error('Failed to update profile:', error)
     } finally {
       setIsSaving(false)

@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import TodoForm from '../components/todo/TodoForm'
 import TodoList from '../components/todo/TodoList'
-import Alert from '../components/common/Alert'
+//import Alert from '../components/common/Alert'
 import Button from '../components/common/Button'
 import ConfirmModal from '../components/common/ConfirmModal'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   selectActiveListTasks,
-  selectActiveListTasksError,
+  //selectActiveListTasksError,
   selectActiveListTasksLoading,
   selectAllLists,
   selectSelectedListId,
@@ -18,6 +18,7 @@ import {
   fetchTasksForListAction,
   updateTaskAction,
 } from '../redux/actions/tasksAction'
+import { toast } from 'react-toastify'
 
 const TodoPage = () => {
   const dispatch = useDispatch()
@@ -26,9 +27,9 @@ const TodoPage = () => {
   const selectedListId = useSelector(selectSelectedListId)
   const tasks = useSelector(selectActiveListTasks)
   const tasksLoading = useSelector(selectActiveListTasksLoading)
-  const tasksError = useSelector(selectActiveListTasksError)
+  //const tasksError = useSelector(selectActiveListTasksError)
 
-  const [error, setError] = useState(null)
+  //const [error, setError] = useState(null)
   const [editingTask, setEditingTask] = useState(null)
   const [showForm, setShowForm] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
@@ -36,22 +37,26 @@ const TodoPage = () => {
 
   useEffect(() => {
     if (selectedListId) {
-      dispatch(fetchTasksForListAction(selectedListId))
+      try {
+        dispatch(fetchTasksForListAction(selectedListId))
+      } catch (err) {
+        toast.error('Error fetching list')
+      }
     }
   }, [selectedListId, dispatch])
 
-  useEffect(() => {
-    if (tasksError) {
-      setError(tasksError)
-    }
-  }, [tasksError])
+  // useEffect(() => {
+  //   if (tasksError) {
+  //     setError(tasksError)
+  //   }
+  // }, [tasksError])
 
   const handleSubmitTask = async (taskData) => {
     try {
-      setError(null)
+      //setError(null)
 
       if (!selectedListId) {
-        setError('No active list selected')
+        toast.error('No active list selected')
         return
       }
 
@@ -77,35 +82,35 @@ const TodoPage = () => {
         )
       }
     } catch (err) {
-      setError(
-        editingTask
-          ? 'Error saving changes. Please try again.'
-          : 'Error creating task. Please try again.'
-      )
+      editingTask
+        ? toast.error('Error saving changes. Please try again.')
+        : toast.error('Error creating task. Please try again.')
+
       console.error('Error submitting task:', err)
     }
   }
 
   const handleToggleTask = async (id, isCompleted) => {
     try {
-      setError(null)
+      //setError(null)
 
       const currentTask = tasks.find((task) => task.id === id)
       if (!currentTask) {
-        throw new Error('Task not found')
+        toast.error('Task not found')
+        return
       }
 
       const status = isCompleted ? 'completed' : 'not_started'
 
       await dispatch(updateTaskAction(id, { status }))
     } catch (err) {
-      setError('Error updating task status.')
+      //setError('Error updating task status.')
+      toast.error('Error updating task status.')
       console.error('Error toggling task:', err)
     }
   }
 
   const handleEditTask = (task) => {
-    console.log('Set editing task:', task)
     setEditingTask(task)
     setShowForm(true)
   }
@@ -124,7 +129,7 @@ const TodoPage = () => {
     if (!taskToDelete || !selectedListId) return
 
     try {
-      setError(null)
+      //setError(null)
       await dispatch(deleteTaskAction(taskToDelete.id, selectedListId))
 
       if (editingTask && editingTask.id === taskToDelete.id) {
@@ -134,7 +139,8 @@ const TodoPage = () => {
       setShowConfirm(false)
       setTaskToDelete(null)
     } catch (err) {
-      setError('Error deleting task. Please try again.')
+      //setError('Error deleting task. Please try again.')
+      toast.error('Error deleting task. Please try again.')
       console.error('Error deleting task:', err)
     }
   }
@@ -144,9 +150,9 @@ const TodoPage = () => {
     setTaskToDelete(null)
   }
 
-  const handleCloseAlert = () => {
-    setError(null)
-  }
+  // const handleCloseAlert = () => {
+  //   setError(null)
+  // }
 
   if (!selectedListId) {
     return (
@@ -185,17 +191,17 @@ const TodoPage = () => {
               </div>
 
               <div>
-                {error && (
-                  <Alert
-                    variant="danger"
-                    dismissible
-                    onClose={handleCloseAlert}
-                    className="mb-4"
-                  >
-                    <i className="fas fa-exclamation-circle me-2"></i>
-                    {error}
-                  </Alert>
-                )}
+                {/*{error && (*/}
+                {/*  <Alert*/}
+                {/*    variant="danger"*/}
+                {/*    dismissible*/}
+                {/*    onClose={handleCloseAlert}*/}
+                {/*    className="mb-4"*/}
+                {/*  >*/}
+                {/*    <i className="fas fa-exclamation-circle me-2"></i>*/}
+                {/*    {error}*/}
+                {/*  </Alert>*/}
+                {/*)}*/}
 
                 {showForm && (
                   <div className="mb-4">

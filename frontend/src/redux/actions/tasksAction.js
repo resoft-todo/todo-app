@@ -58,6 +58,7 @@ export const fetchTasksForListAction =
       dispatch(fetchTasksSuccess(data, listId))
     } catch (err) {
       dispatch(fetchTasksFailure(err.message, listId))
+      throw err
     }
   }
 
@@ -74,6 +75,7 @@ export const createTaskAction =
       dispatch(createTaskSuccess(newTask))
     } catch (err) {
       console.error(err)
+      throw err
     }
   }
 
@@ -83,6 +85,7 @@ export const updateTaskAction = (taskId, updateData) => async (dispatch) => {
     dispatch(updateTaskSuccess(updated))
   } catch (err) {
     console.error(err)
+    throw err
   }
 }
 
@@ -92,5 +95,6 @@ export const deleteTaskAction = (taskId, listId) => async (dispatch) => {
     dispatch(deleteTaskSuccess(taskId, listId))
   } catch (err) {
     console.error(err)
+    throw err
   }
 }

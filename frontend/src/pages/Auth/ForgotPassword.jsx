@@ -5,18 +5,13 @@ import { forgotPasswordReset } from '../../api/authService'
 import Input from '../../components/common/Input'
 import Button from '../../components/common/Button'
 import { toast } from 'react-toastify'
+import { validateEmail } from '../../validation/validation'
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [touched, setTouched] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
-
-  const validateEmail = (email) => {
-    if (!email.trim()) return 'Email is required'
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    return re.test(email.trim()) ? '' : 'Email is invalid'
-  }
 
   const emailError = validateEmail(email)
   const isFormValid = !emailError && !loading

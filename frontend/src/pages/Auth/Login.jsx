@@ -6,6 +6,7 @@ import Button from '../../components/common/Button'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { toast } from 'react-toastify'
+import { validateEmail } from '../../validation/validation'
 
 export default function Login() {
   const navigate = useNavigate()
@@ -18,12 +19,6 @@ export default function Login() {
 
   const [touchedEmail, setTouchedEmail] = useState(false)
   const [touchedPassword, setTouchedPassword] = useState(false)
-
-  const validateEmail = (email) => {
-    if (!email.trim()) return 'Email is required'
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    return re.test(email.trim()) ? '' : 'Email is invalid'
-  }
 
   const validatePassword = (password) => {
     if (!password) return 'Password is required'

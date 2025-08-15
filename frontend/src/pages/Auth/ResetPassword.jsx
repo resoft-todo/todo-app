@@ -5,6 +5,10 @@ import { setNewResetPassword } from '../../api/authService'
 import Input from '../../components/common/Input'
 import Button from '../../components/common/Button'
 import { toast } from 'react-toastify'
+import {
+  validateConfirmPassword,
+  validatePassword,
+} from '../../validation/validation'
 
 export default function ResetPassword() {
   const { token } = useParams()
@@ -24,23 +28,6 @@ export default function ResetPassword() {
       navigate('/login')
     }
   }, [token, navigate])
-
-  const validatePassword = (password) => {
-    if (!password.trim()) return 'Password is required'
-    if (password.length < 6) return 'Password must be at least 6 characters'
-    if (!/[A-Z]/.test(password))
-      return 'Must contain at least one uppercase letter'
-    if (!/[a-z]/.test(password))
-      return 'Must contain at least one lowercase letter'
-    if (!/[0-9]/.test(password)) return 'Must contain at least one number'
-    return ''
-  }
-
-  const validateConfirmPassword = (confirmPassword, password) => {
-    if (!confirmPassword) return 'Confirm password is required'
-    if (confirmPassword !== password) return 'Passwords do not match'
-    return ''
-  }
 
   const passwordError = validatePassword(password)
   const confirmPasswordError = validateConfirmPassword(

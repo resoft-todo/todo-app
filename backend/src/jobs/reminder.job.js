@@ -1,9 +1,15 @@
 import cron from 'node-cron';
 import taskService from '../services/task.services.js';
 import notificationService from '../services/notification.services.js';
+import { userSocketMap } from '../webSocket/webSocket.js';
 
-function start() {
-    cron.schedule('0 9,22 * * * ', async () => {
+let ioInstance;
+
+function start(socketIoInstance) {
+
+    ioInstance = socketIoInstance;
+    
+    cron.schedule('*/15 * * * * ', async () => {
         try {
             const tasks = await taskService.getDueTasksForReminders();
 
@@ -29,10 +35,18 @@ function start() {
 
             const sendPromises = [];
             for (const [userId, data] of tasksByUser.entries()) {
-                sendPromises.push(notificationService.sendEmailReminder(data.email, data.tasks));
+                //sendPromises.push(notificationService.sendEmailReminder(data.email, data.tasks));
+
+                const userSocketId = userSocketMap.get(userId);
+                if (userSocketId) {
+                    ioInstance.to(userSocketId).emit('todayTasks', data.tasks);
+                }
+                else {
+                    console.log(`User ${userId} is not currently connected via WebSocket`);
+                }
             }
 
-            await Promise.all(sendPromises);
+            //await Promise.all(sendPromises);
 
         } catch (error) {
             console.error('An error occurred during the reminder job:', error);

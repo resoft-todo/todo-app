@@ -10,13 +10,21 @@ import listRoutes from './routes/list.routes.js';
 import taskRoutes from './routes/task.routes.js';
 import groupRoutes from './routes/group.routes.js';
 import reminder  from './jobs/reminder.job.js';
+import { createServer } from 'http';
+import { Server } from 'socket.io';
+import setupWebSocket from './webSocket/webSocket.js';
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 8000;
+
+const server = createServer(app);
 const corsOptions = {credentials: true, origin: process.env.FRONTEND_URL || '*'};
 
+const io = new Server(server, {
+    cors: corsOptions
+});
 
 // Middlewares
 app.use(express.json());
@@ -59,10 +67,13 @@ app.use('/api/lists', listRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/groups', groupRoutes);
 
+// WebSocket setup
+setupWebSocket(io);
+
 // background job
 reminder.start();
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
 

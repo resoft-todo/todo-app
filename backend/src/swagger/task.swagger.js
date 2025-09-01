@@ -135,6 +135,61 @@
  *         description: Internal Server Error.
  */
 
+
+/**
+ * @swagger
+ * /api/tasks/today:
+ *   get:
+ *     summary: Get all of the authenticated user's tasks for today
+ *     tags: [Tasks]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: A list of the user's tasks for today
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Task'
+ *       401:
+ *         description: Unauthorized.
+ *       403:
+ *         description: Forbidden - User does not have permission to view these tasks.
+ *       500:
+ *         description: Internal Server Error.
+ */
+
+
+/**
+ * @swagger
+ *         name: status
+ *         description: find or filter tasks by one or more statuses
+ *         required: true
+ *         schema:
+ *           type: array
+ *           items:
+ *             type: string
+ *             enum: [not_started, completed]
+ *         style: form
+ *         explode: true
+ *         example: /api/tasks?status=not_started&status=in_progress
+ *     responses:
+ *       200:
+ *         description: A list of the user's tasks matching the filter
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Task'
+ *       401:
+ *         description: Unauthorized.
+ *       500:
+ *         description: Internal Server Error.
+ */
+
 /**
  * @swagger
  * /api/lists/{listId}/tasks:

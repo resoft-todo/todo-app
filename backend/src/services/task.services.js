@@ -170,12 +170,47 @@ async function getDueTasksForReminders() {
     });
 }
 
+
+async function getTasksForToday(userId) {
+    const today = new Date();
+    const startOfDay = new Date(today.setHours(0, 0, 0, 0));
+    const endOfDay = new Date(today.setHours(23, 59, 59, 999));
+
+    const todayTasks = await prisma.task.findMany({
+        where: {
+            dueDate: {
+                gte: startOfDay,
+                lte: endOfDay,
+            },
+            list:{
+                user: {
+                    id: userId
+                },
+            },
+        },
+        include:{
+            list: {
+                select: {
+                    name: true
+                }
+            }
+        }
+    });
+
+    if(todayTasks.length === 0) {
+        throw new Error('No tasks found for reminders today');
+    }
+
+    return todayTasks;
+}
+
 export default {
     createTask,
     getTaskById,
     updateTask,
     deleteTask,
     getDueTasksForReminders,
+    getTasksForToday,
     getTasksByStatus,
     getTasksFromList
 };

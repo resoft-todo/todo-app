@@ -191,7 +191,7 @@ async function getTasksForToday(userId) {
         include:{
             list: {
                 select: {
-                    name: true
+                    id: true
                 }
             }
         }

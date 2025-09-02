@@ -1,6 +1,6 @@
 import cron from 'node-cron';
 import taskService from '../services/task.services.js';
-import notificationService from '../services/notification.services.js';
+//import notificationService from '../services/notification.services.js';
 import { userSocketMap } from '../webSocket/webSocket.js';
 
 let ioInstance;
@@ -9,7 +9,7 @@ function start(socketIoInstance) {
 
     ioInstance = socketIoInstance;
     
-    cron.schedule('*/15 * * * * ', async () => {
+    cron.schedule('*/1 * * * * ', async () => {
         try {
             const tasks = await taskService.getDueTasksForReminders();
 
@@ -33,7 +33,7 @@ function start(socketIoInstance) {
             }
 
 
-            const sendPromises = [];
+            //const sendPromises = [];
             for (const [userId, data] of tasksByUser.entries()) {
                 //sendPromises.push(notificationService.sendEmailReminder(data.email, data.tasks));
 

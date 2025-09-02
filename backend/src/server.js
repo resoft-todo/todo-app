@@ -71,7 +71,7 @@ app.use('/api/groups', groupRoutes);
 setupWebSocket(io);
 
 // background job
-reminder.start();
+reminder.start(io);
 
 server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

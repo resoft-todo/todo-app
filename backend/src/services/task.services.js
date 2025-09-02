@@ -198,7 +198,7 @@ async function getTasksForToday(userId) {
     });
 
     if(todayTasks.length === 0) {
-        throw new Error('No tasks found for reminders today');
+        throw new Error("Forbidden: You do not own this list or it does not exist.");
     }
 
     return todayTasks;

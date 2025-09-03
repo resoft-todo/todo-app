@@ -159,9 +159,6 @@ async function getTasksForToday(req, res) {
         const tasks = await taskServices.getTasksForToday(userId);
         res.status(200).json(tasks);
     } catch (error) {
-        if (error.message.includes('Forbidden')) {
-            return res.status(403).json({ message: error.message });
-        }
         res.status(500).json({ error: error.message });
     }
 }

@@ -66,7 +66,17 @@ async function updateTask(req, res) {
 
     const { title, description, status, dueDate } = req.body;
 
-    const dataToUpdate = { title, description, status, dueDate };
+    let finalDueDate;
+
+    if (dueDate) {
+        try {
+            finalDueDate = formatDate(dueDate);
+        } catch (error) {
+            return res.status(400).json({ message: error.message });
+        }
+    }
+
+    const dataToUpdate = { title, description, status, dueDate: finalDueDate };
 
     try {
         const updatedTask = await taskServices.updateTask(taskId, dataToUpdate, userId);

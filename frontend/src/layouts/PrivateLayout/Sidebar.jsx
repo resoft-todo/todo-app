@@ -18,6 +18,8 @@ import ConfirmModal from '../../components/common/ConfirmModal'
 import { useAuth } from '../../context/AuthContext'
 import ProfileModal from '../../components/todo/ProfileModal/ProfileModal'
 import { toast } from 'react-toastify'
+import { useNavigate } from 'react-router-dom'
+import { fetchTodayTasksAction } from '../../redux/actions/dashboardAction'
 
 export default function Sidebar({
   isMobileOpen,
@@ -26,6 +28,7 @@ export default function Sidebar({
   onDidSelect,
 }) {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const { user, loading: userLoading } = useAuth()
   const [isProfileModalOpen, setProfileModalOpen] = useState(false)
 
@@ -51,6 +54,8 @@ export default function Sidebar({
       if (onDidSelect) {
         onDidSelect()
       }
+
+      navigate(`/lists/${listId}`)
     } catch (error) {
       toast.error('Error selecting list. Please try again.')
       console.error('Error selecting list' + error)
@@ -133,6 +138,18 @@ export default function Sidebar({
     setLoading(true)
     try {
       await dispatch(deleteListAction(listIdToDelete))
+
+      if (selectedListId === listIdToDelete) {
+        navigate('/dashboard')
+        // if (lists.length !== 0) {
+        //   dispatch(selectList(lists[0].id))
+        //   navigate(`/lists/${lists[0].id}`)
+        // } else {
+        //   dispatch(selectList(null))
+        //   navigate(`/lists`)
+        // }
+      }
+      await dispatch(fetchTodayTasksAction())
       setShowConfirm(false)
       setListIdToDelete(null)
     } catch (error) {
@@ -143,12 +160,19 @@ export default function Sidebar({
     }
   }
 
+  const handleClickDashboard = () => {
+    navigate('lists/dashboard')
+    if (onDidSelect) {
+      onDidSelect()
+    }
+  }
+
   return (
     <div
       className={`${styles.sidebar} ${isCollapsed ? styles.collapsed : ''} ${isMobileOpen ? styles.show : ''}`}
     >
       {/* Sidebar Header */}
-      <div className={styles.sidebarHeader}>
+      <div className={`${styles.sidebarHeader}`}>
         <div className="d-flex justify-content-between align-items-center">
           <h5
             className="mb-0"
@@ -180,6 +204,19 @@ export default function Sidebar({
                 )
               )}
             </div>
+          )}
+        </div>
+      </div>
+      <div
+        className={`${styles.sidebarHeader} ${styles.animation}`}
+        onClick={handleClickDashboard}
+      >
+        <div className={`${styles.listNameContainer} `}>
+          <i className="fas fa-calendar-alt me-2"></i>
+          {!isCollapsed && (
+            <span className={styles.listNameText} title="Dashboard">
+              Dashboard
+            </span>
           )}
         </div>
       </div>

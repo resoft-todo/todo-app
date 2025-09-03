@@ -70,3 +70,13 @@ export const deleteTask = async (taskId) => {
     throw err
   }
 }
+
+export const getTodayTasks = async () => {
+  try {
+    const response = await axiosInstance.get(`/tasks/today`)
+    return response.data
+  } catch (err) {
+    console.error('Failed to get today tasks for list:', err)
+    throw err
+  }
+}

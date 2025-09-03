@@ -333,3 +333,33 @@ s,
 .red{
   color: $danger-dark !important;
 }
+
+.todo-meta {
+  margin-left: -5px;
+  margin-right: -5px;
+}
+
+.todo-meta > div {
+  margin: 5px;
+}
+
+.todo-folder-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
+  display: inline-block;
+  cursor: pointer
+}
+
+@media (max-width: 576px) {
+  .todo-folder-name {
+    max-width: 100px;
+  }
+}
+
+@media (min-width: 768px) {
+  .todo-folder-name {
+    max-width: 200px;
+  }
+}

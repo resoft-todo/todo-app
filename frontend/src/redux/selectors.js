@@ -69,3 +69,13 @@ export const selectCompletedTasksCountByListId = (listId) => (state) => {
 export const selectAreTasksLoadedForList = (listId) => (state) => {
   return Boolean(state.tasks.byListId[listId])
 }
+
+// Selector: dashboard tasks
+export const selectTodayTasks = (state) => state.dashboard.todayTasks
+export const selectTodayTasksLoading = (state) => state.dashboard.loading
+export const selectTodayTasksError = (state) => state.dashboard.error
+
+export const getListById = (listId) => (state) => {
+  const list = state.lists.items.find((list) => list.id === listId)
+  return list
+}

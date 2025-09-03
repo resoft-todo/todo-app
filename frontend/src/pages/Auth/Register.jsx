@@ -10,7 +10,7 @@ import {
   validateEmail,
   validateName,
   validatePassword,
-} from '../../validation/validation'
+} from '../../utils/validation'
 
 export default function Register() {
   const [name, setName] = useState('')

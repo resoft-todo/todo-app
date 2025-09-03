@@ -1,12 +1,14 @@
 import { useState } from 'react'
-import { login } from '../../api/authService'
+import { getStoredUser, login } from '../../api/authService'
 import React from 'react'
 import Input from '../../components/common/Input'
 import Button from '../../components/common/Button'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { toast } from 'react-toastify'
-import { validateEmail } from '../../validation/validation'
+import { validateEmail } from '../../utils/validation'
+import { initSocket } from '../../webSocket'
+import { useDispatch } from 'react-redux'
 
 export default function Login() {
   const navigate = useNavigate()
@@ -14,6 +16,7 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const dispatch = useDispatch()
 
   const { refetchUser } = useAuth()
 
@@ -63,6 +66,7 @@ export default function Login() {
         setTouchedEmail(false)
         setPassword('')
         setTouchedPassword(false)
+        initSocket(getStoredUser().id, dispatch)
       } else {
         toast.error('Unexpected response from server')
         //setError('Unexpected response from server')

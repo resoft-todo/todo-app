@@ -5,7 +5,7 @@ import { forgotPasswordReset } from '../../api/authService'
 import Input from '../../components/common/Input'
 import Button from '../../components/common/Button'
 import { toast } from 'react-toastify'
-import { validateEmail } from '../../validation/validation'
+import { validateEmail } from '../../utils/validation'
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('')

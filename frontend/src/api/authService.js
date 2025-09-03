@@ -1,5 +1,6 @@
 import axios from 'axios'
 import axiosInstance from './axiosInstance'
+import { disconnectSocket } from '../webSocket'
 
 const API_URL = 'http://localhost:8000/api'
 
@@ -133,6 +134,7 @@ export async function logoutGlobal() {
       {},
       { withCredentials: true }
     )
+    disconnectSocket()
   } catch (err) {
     console.warn('Logout request failed (ignore):', err)
   } finally {

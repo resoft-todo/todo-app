@@ -1,6 +1,7 @@
 import React from 'react'
 import TodoPage from '../pages/TodoPage'
 import { Navigate } from 'react-router-dom'
+import DashboardPage from '../pages/DashboardPage'
 
 export const privateRoutes = [
   {
@@ -18,6 +19,10 @@ export const privateRoutes = [
   {
     path: '/lists/:listId',
     element: <TodoPage />,
+  },
+  {
+    path: 'lists/dashboard',
+    element: <DashboardPage />,
   },
   {
     path: '*',

@@ -79,6 +79,10 @@ export const tasksReducer = (state = initialState, action) => {
       const updatedTask = action.payload
       const updatedTaskListId = updatedTask.list?.id || updatedTask.listId
 
+      if (!state.byListId[updatedTaskListId]) {
+        return state
+      }
+
       return {
         ...state,
         byListId: {
@@ -91,6 +95,11 @@ export const tasksReducer = (state = initialState, action) => {
     }
     case DELETE_TASK_SUCCESS: {
       const { taskId, listId: deleteListId } = action.payload
+
+      if (!state.byListId[deleteListId]) {
+        return state
+      }
+
       return {
         ...state,
         byListId: {

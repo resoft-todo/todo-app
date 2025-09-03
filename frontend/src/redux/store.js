@@ -2,10 +2,12 @@ import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
 import { listsReducer } from './reducers/listsReducer'
 import { tasksReducer } from './reducers/tasksReducer'
 import { thunk } from 'redux-thunk'
+import { dashboardReducer } from './reducers/dashboardReducer'
 
 const rootReducer = combineReducers({
   lists: listsReducer,
   tasks: tasksReducer,
+  dashboard: dashboardReducer,
 })
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose

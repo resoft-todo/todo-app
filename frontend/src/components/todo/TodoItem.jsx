@@ -1,9 +1,21 @@
 import React, { useState } from 'react'
 import Button from '../common/Button'
 import Checkbox from '../common/Checkbox'
+import { formatDate, isOverdue } from '../../utils/formats'
+import { getListById } from '../../redux/selectors'
+import { useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 
-const TodoItem = ({ task, onToggle, onEdit, onDelete, loading = false }) => {
+const TodoItem = ({
+  task,
+  onToggle,
+  onEdit,
+  onDelete,
+  loading = false,
+  inDashboard = false,
+}) => {
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false)
+  const navigate = useNavigate()
 
   const handleToggle = () => {
     const newStatus = task.status !== 'completed'
@@ -22,16 +34,7 @@ const TodoItem = ({ task, onToggle, onEdit, onDelete, loading = false }) => {
     setIsDescriptionExpanded(!isDescriptionExpanded)
   }
 
-  const formatDate = (dateString) => {
-    if (!dateString) return ''
-    const dateOnly = dateString.split('T')[0]
-    const date = new Date(dateOnly + 'T00:00:00')
-    return date.toLocaleDateString({
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    })
-  }
+  const list = useSelector(getListById(task.list?.id))
 
   return (
     <div
@@ -79,10 +82,33 @@ const TodoItem = ({ task, onToggle, onEdit, onDelete, loading = false }) => {
                   </p>
                 )}
 
-                {task.dueDate && (
-                  <div className="text-muted small">
-                    <i className={`fas fa-clock me-1`}></i>
-                    {formatDate(task.dueDate)}
+                {(task.dueDate || (inDashboard && list)) && (
+                  <div className="d-flex flex-wrap align-items-center todo-meta">
+                    {task.dueDate && (
+                      <div
+                        className={`d-flex align-items-center me-3 mb-1 mt-1 ${
+                          isOverdue(task.dueDate) && task.status !== 'completed'
+                            ? 'text-danger'
+                            : 'text-muted'
+                        }`}
+                      >
+                        <i className="fas fa-clock me-1"></i>
+                        <span>{formatDate(task.dueDate)}</span>
+                      </div>
+                    )}
+
+                    {inDashboard && list && (
+                      <div className="d-flex align-items-center mb-1 mt-1 text-muted todo-folder-group">
+                        <i className="fas fa-folder me-1"></i>
+                        <span
+                          className="todo-folder-name"
+                          title={list.name}
+                          onClick={() => navigate(`/lists/${list.id}`)}
+                        >
+                          {list.name}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

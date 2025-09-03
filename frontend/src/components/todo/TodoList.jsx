@@ -1,7 +1,14 @@
 import React, { useState } from 'react'
 import TodoItem from './TodoItem'
 
-const TodoList = ({ tasks, onToggle, onEdit, onDelete, loading = false }) => {
+const TodoList = ({
+  tasks,
+  onToggle,
+  onEdit,
+  onDelete,
+  loading = false,
+  inDashboard,
+}) => {
   const [showCompleted, setShowCompleted] = useState(true)
 
   const activeTasks = tasks.filter((task) => task.status !== 'completed')
@@ -34,6 +41,7 @@ const TodoList = ({ tasks, onToggle, onEdit, onDelete, loading = false }) => {
                 onEdit={onEdit}
                 onDelete={onDelete}
                 loading={loading}
+                inDashboard={inDashboard}
               />
             </div>
           ))}
@@ -66,6 +74,7 @@ const TodoList = ({ tasks, onToggle, onEdit, onDelete, loading = false }) => {
                     onEdit={onEdit}
                     onDelete={onDelete}
                     loading={loading}
+                    inDashboard={inDashboard}
                   />
                 </div>
               ))}

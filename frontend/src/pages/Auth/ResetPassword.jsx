@@ -8,7 +8,7 @@ import { toast } from 'react-toastify'
 import {
   validateConfirmPassword,
   validatePassword,
-} from '../../validation/validation'
+} from '../../utils/validation'
 
 export default function ResetPassword() {
   const { token } = useParams()

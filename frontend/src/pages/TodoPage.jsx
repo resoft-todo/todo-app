@@ -19,12 +19,15 @@ import {
   updateTaskAction,
 } from '../redux/actions/tasksAction'
 import { toast } from 'react-toastify'
+import { useParams } from 'react-router-dom'
+import { selectList } from '../redux/actions/listsAction'
 
 const TodoPage = () => {
   const dispatch = useDispatch()
 
   const lists = useSelector(selectAllLists)
   const selectedListId = useSelector(selectSelectedListId)
+  const { listId } = useParams()
   const tasks = useSelector(selectActiveListTasks)
   const tasksLoading = useSelector(selectActiveListTasksLoading)
   //const tasksError = useSelector(selectActiveListTasksError)
@@ -36,14 +39,21 @@ const TodoPage = () => {
   const [taskToDelete, setTaskToDelete] = useState(null)
 
   useEffect(() => {
-    if (selectedListId) {
+    if (listId) {
+      try {
+        dispatch(selectList(listId))
+        dispatch(fetchTasksForListAction(listId))
+      } catch (err) {
+        toast.error('Error fetching list')
+      }
+    } else if (selectedListId) {
       try {
         dispatch(fetchTasksForListAction(selectedListId))
       } catch (err) {
         toast.error('Error fetching list')
       }
     }
-  }, [selectedListId, dispatch])
+  }, [selectedListId, dispatch, listId])
 
   // useEffect(() => {
   //   if (tasksError) {
@@ -233,6 +243,7 @@ const TodoPage = () => {
                     onEdit={handleEditTask}
                     onDelete={handleDeleteRequest}
                     loading={tasksLoading}
+                    inDashboard={false}
                   />
                 )}
               </div>

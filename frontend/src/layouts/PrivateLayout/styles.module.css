@@ -18,6 +18,15 @@
   flex-shrink: 0;
 }
 
+.animation {
+  transition: all 0.2s ease;
+  position: relative;
+  cursor: pointer;
+}
+.animation:hover:not(.selected) {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
 .sidebarContent {
   flex: 1;
   overflow-y: auto;

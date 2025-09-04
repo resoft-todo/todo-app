@@ -19,7 +19,7 @@ import {
   updateTaskAction,
 } from '../redux/actions/tasksAction'
 import { toast } from 'react-toastify'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { selectList } from '../redux/actions/listsAction'
 
 const TodoPage = () => {
@@ -37,14 +37,22 @@ const TodoPage = () => {
   const [showForm, setShowForm] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
   const [taskToDelete, setTaskToDelete] = useState(null)
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (listId) {
-      try {
-        dispatch(selectList(listId))
-        dispatch(fetchTasksForListAction(listId))
-      } catch (err) {
-        toast.error('Error fetching list')
+      const exists = lists.some((list) => list.id === listId)
+
+      if (exists) {
+        try {
+          dispatch(selectList(listId))
+          dispatch(fetchTasksForListAction(listId))
+        } catch (err) {
+          toast.error('Error fetching list')
+        }
+      } else {
+        dispatch(selectList(null))
+        navigate('/lists')
       }
     } else if (selectedListId) {
       try {
@@ -53,7 +61,7 @@ const TodoPage = () => {
         toast.error('Error fetching list')
       }
     }
-  }, [selectedListId, dispatch, listId])
+  }, [listId, selectedListId, lists, dispatch, navigate])
 
   // useEffect(() => {
   //   if (tasksError) {

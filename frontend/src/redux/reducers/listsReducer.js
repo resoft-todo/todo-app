@@ -51,11 +51,7 @@ export const listsReducer = (state = initialState, action) => {
         ...state,
         items: newItems,
         selectedListId:
-          state.selectedListId === action.payload
-            ? newItems.length > 0
-              ? newItems[0].id
-              : null
-            : state.selectedListId,
+          state.selectedListId === action.payload ? null : state.selectedListId,
       }
     }
     case SELECT_LIST:

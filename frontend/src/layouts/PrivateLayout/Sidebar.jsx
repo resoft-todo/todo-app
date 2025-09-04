@@ -140,7 +140,7 @@ export default function Sidebar({
       await dispatch(deleteListAction(listIdToDelete))
 
       if (selectedListId === listIdToDelete) {
-        navigate('/dashboard')
+        navigate('/lists')
         // if (lists.length !== 0) {
         //   dispatch(selectList(lists[0].id))
         //   navigate(`/lists/${lists[0].id}`)

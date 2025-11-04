@@ -1,0 +1,292 @@
+import React, { useState, useEffect } from 'react'
+import TodoForm from '../components/todo/TodoForm'
+import TodoList from '../components/todo/TodoList'
+//import Alert from '../components/common/Alert'
+import Button from '../components/common/Button'
+import ConfirmModal from '../components/common/ConfirmModal'
+import { useDispatch, useSelector } from 'react-redux'
+import {
+  selectActiveListTasks,
+  //selectActiveListTasksError,
+  selectActiveListTasksLoading,
+  selectAllLists,
+  selectSelectedListId,
+} from '../redux/selectors'
+import {
+  createTaskAction,
+  deleteTaskAction,
+  fetchTasksForListAction,
+  updateTaskAction,
+} from '../redux/actions/tasksAction'
+import { toast } from 'react-toastify'
+import { useNavigate, useParams } from 'react-router-dom'
+import { selectList } from '../redux/actions/listsAction'
+
+const TodoPage = () => {
+  const dispatch = useDispatch()
+
+  const lists = useSelector(selectAllLists)
+  const selectedListId = useSelector(selectSelectedListId)
+  const { listId } = useParams()
+  const tasks = useSelector(selectActiveListTasks)
+  const tasksLoading = useSelector(selectActiveListTasksLoading)
+  //const tasksError = useSelector(selectActiveListTasksError)
+
+  //const [error, setError] = useState(null)
+  const [editingTask, setEditingTask] = useState(null)
+  const [showForm, setShowForm] = useState(false)
+  const [showConfirm, setShowConfirm] = useState(false)
+  const [taskToDelete, setTaskToDelete] = useState(null)
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (listId) {
+      const exists = lists.some((list) => list.id === listId)
+
+      if (exists) {
+        try {
+          dispatch(selectList(listId))
+          dispatch(fetchTasksForListAction(listId))
+        } catch (err) {
+          toast.error('Error fetching list')
+        }
+      } else {
+        dispatch(selectList(null))
+        navigate('/lists')
+      }
+    } else if (selectedListId) {
+      try {
+        dispatch(fetchTasksForListAction(selectedListId))
+      } catch (err) {
+        toast.error('Error fetching list')
+      }
+    }
+  }, [listId, selectedListId, lists, dispatch, navigate])
+
+  // useEffect(() => {
+  //   if (tasksError) {
+  //     setError(tasksError)
+  //   }
+  // }, [tasksError])
+
+  const handleSubmitTask = async (taskData) => {
+    try {
+      //setError(null)
+
+      if (!selectedListId) {
+        toast.error('No active list selected')
+        return
+      }
+
+      if (editingTask) {
+        await dispatch(
+          updateTaskAction(editingTask.id, {
+            title: taskData.title,
+            description: taskData.description,
+            status: taskData.status,
+            dueDate: taskData.dueDate,
+          })
+        )
+        setEditingTask(null)
+      } else {
+        await dispatch(
+          createTaskAction(
+            taskData.title,
+            selectedListId,
+            taskData.description,
+            taskData.status,
+            taskData.dueDate
+          )
+        )
+      }
+    } catch (err) {
+      editingTask
+        ? toast.error('Error saving changes. Please try again.')
+        : toast.error('Error creating task. Please try again.')
+
+      console.error('Error submitting task:', err)
+    }
+  }
+
+  const handleToggleTask = async (id, isCompleted) => {
+    try {
+      //setError(null)
+
+      const currentTask = tasks.find((task) => task.id === id)
+      if (!currentTask) {
+        toast.error('Task not found')
+        return
+      }
+
+      const status = isCompleted ? 'completed' : 'not_started'
+
+      await dispatch(updateTaskAction(id, { status }))
+    } catch (err) {
+      //setError('Error updating task status.')
+      toast.error('Error updating task status.')
+      console.error('Error toggling task:', err)
+    }
+  }
+
+  const handleEditTask = (task) => {
+    setEditingTask(task)
+    setShowForm(true)
+  }
+
+  const handleCancelEdit = () => {
+    setEditingTask(null)
+  }
+
+  const handleDeleteRequest = (taskId) => {
+    const task = tasks.find((t) => t.id === taskId)
+    setTaskToDelete(task)
+    setShowConfirm(true)
+  }
+
+  const handleConfirmDelete = async () => {
+    if (!taskToDelete || !selectedListId) return
+
+    try {
+      //setError(null)
+      await dispatch(deleteTaskAction(taskToDelete.id, selectedListId))
+
+      if (editingTask && editingTask.id === taskToDelete.id) {
+        setEditingTask(null)
+      }
+
+      setShowConfirm(false)
+      setTaskToDelete(null)
+    } catch (err) {
+      //setError('Error deleting task. Please try again.')
+      toast.error('Error deleting task. Please try again.')
+      console.error('Error deleting task:', err)
+    }
+  }
+
+  const handleCancelDelete = () => {
+    setShowConfirm(false)
+    setTaskToDelete(null)
+  }
+
+  // const handleCloseAlert = () => {
+  //   setError(null)
+  // }
+
+  if (!selectedListId) {
+    return (
+      <div className="d-flex align-items-center justify-content-center vh-100">
+        <div className="text-center">
+          <i className="fas fa-list-ul fa-4x text-muted mb-4"></i>
+          <h3 className="text-muted mb-3">No List Selected</h3>
+          <p className="text-muted">
+            {lists.length === 0
+              ? 'Create your first list to get started with organizing your tasks.'
+              : 'Select a list from the sidebar to view and manage your tasks.'}
+          </p>
+        </div>
+      </div>
+    )
+  }
+
+  const selectedList = lists.find((list) => list.id === selectedListId)
+
+  return (
+    <div className="py-4">
+      <div className="container">
+        <div className="row justify-content-center">
+          <div className="col-12 col-lg-10 col-xl-8">
+            <div className="todo-container">
+              <div className="d-flex flex-md-row justify-content-center align-items-start mb-4 gap-3">
+                <div className="todo-header text-center min-w-0 text-break">
+                  <h1 className="mb-1">
+                    <i className="fas fa-tasks me-3"></i>
+                    {selectedList ? selectedList.name : 'TODO List'}
+                  </h1>
+                  <p className="text-muted mb-0">
+                    Organize your tasks efficiently
+                  </p>
+                </div>
+              </div>
+
+              <div>
+                {/*{error && (*/}
+                {/*  <Alert*/}
+                {/*    variant="danger"*/}
+                {/*    dismissible*/}
+                {/*    onClose={handleCloseAlert}*/}
+                {/*    className="mb-4"*/}
+                {/*  >*/}
+                {/*    <i className="fas fa-exclamation-circle me-2"></i>*/}
+                {/*    {error}*/}
+                {/*  </Alert>*/}
+                {/*)}*/}
+
+                {showForm && (
+                  <div className="mb-4">
+                    <TodoForm
+                      onSubmit={handleSubmitTask}
+                      loading={tasksLoading}
+                      editTask={editingTask}
+                      onCancel={() => {
+                        handleCancelEdit()
+                        setShowForm(false)
+                      }}
+                    />
+                  </div>
+                )}
+
+                {tasksLoading && tasks.length === 0 && (
+                  <div className="text-center py-5">
+                    <div className="spinner-border text-primary" role="status">
+                      <span className="visually-hidden">Loading...</span>
+                    </div>
+                    <p className="mt-3 text-muted">Loading tasks...</p>
+                  </div>
+                )}
+
+                {(!tasksLoading || tasks.length > 0) && selectedListId && (
+                  <TodoList
+                    tasks={tasks}
+                    onToggle={handleToggleTask}
+                    onEdit={handleEditTask}
+                    onDelete={handleDeleteRequest}
+                    loading={tasksLoading}
+                    inDashboard={false}
+                  />
+                )}
+              </div>
+
+              {selectedListId && (
+                <Button
+                  className="rounded-btn shadow-sm"
+                  variant="primary"
+                  onClick={() => {
+                    setShowForm((prev) => !prev)
+                    setEditingTask(null)
+                  }}
+                >
+                  <i className="fas fa-plus"></i>
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ConfirmModal
+        isOpen={showConfirm}
+        title="Delete this task?"
+        message={
+          'Are you sure you want to delete this task? This action cannot be undone.'
+        }
+        confirmText="Delete"
+        cancelText="Cancel"
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+        loading={tasksLoading}
+      />
+    </div>
+  )
+}
+
+export default TodoPage

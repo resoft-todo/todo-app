@@ -1,0 +1,13 @@
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.content {
+  padding: 2rem;
+  width: 100%;
+}
+
+/*# sourceMappingURL=styles.module.css.map */

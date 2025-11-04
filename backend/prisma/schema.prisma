@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TaskStatus {
+  not_started
+  in_progress
+  completed
+}
+
+model User {
+  id               String  @id @default(uuid()) @db.Uuid
+  name             String  @default("user")
+  email            String  @unique
+  password         String
+  isNotificationOn Boolean @default(true)
+
+  refreshToken         String?   @unique
+  passwordResetToken   String?   @unique
+  passwordResetExpires DateTime?
+  lists                List[]
+  createdGroups        Group[]   @relation("GroupCreator")
+}
+
+model List {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId  String  @db.Uuid
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  groupId String? @db.Uuid
+  group   Group?  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  tasks Task[]
+}
+
+model Group {
+  id   String @id @default(uuid()) @db.Uuid
+  name String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String @db.Uuid
+  user   User   @relation("GroupCreator", fields: [userId], references: [id], onDelete: Cascade)
+  lists  List[]
+}
+
+model Task {
+  id          String     @id @default(uuid()) @db.Uuid
+  title       String
+  description String?
+  status      TaskStatus @default(not_started)
+  dueDate     DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  listId String @db.Uuid
+  list   List   @relation(fields: [listId], references: [id], onDelete: Cascade)
+}
